@@ -12,7 +12,8 @@ Current things that need working on:
 
 logging
 perhaps adding a terminal in the main window to show history? 
-prettification 
+prettification/organization
+code organization
 Making a stand alone executable from this
 
 '''
@@ -48,13 +49,13 @@ class GUI:
 		#launch_frame.grid(row = 1,column = 1,sticky= 'E')
 
 		close_button = Tk.Button(connection_frame, text = "Quit Application",font = FONT, command = lambda:self.exit(master))
-		close_button.pack()
+		close_button.pack(fill = 'both')
 		create_connection_button = Tk.Button(connection_frame,text = "Create Connection",font = FONT, command = self.create_connection)
-		create_connection_button.pack()
+		create_connection_button.pack(fill = 'both')
 		ping_button = Tk.Button(connection_frame,text = "Ping Server",font = FONT,command = self.ping_server)
-		ping_button.pack()
+		ping_button.pack(fill = 'both')
 		listen_button = Tk.Button(connection_frame, text = "Read Statuses",font = FONT,command = self.get_info)
-		listen_button.pack()
+		listen_button.pack(fill = 'both')
 
 		launch_button = Tk.Button(launch_frame,text = "Launch!", font = FONT,command =lambda:self.send_info('L'))
 		launch_button.pack(fill = 'both')
@@ -63,6 +64,7 @@ class GUI:
 		abort_button = Tk.Button(launch_frame,text = "Abort!",font = FONT,command = lambda:self.send_info('A'))
 		abort_button.pack(fill = 'both')
 
+		#vakve frame
 		breakwire_label = Tk.Label(valve_frame, text = "Breakwire Status",font = FONT)
 		breakwire_label.grid(row = 2, column = 0 ,sticky = 'W')
 		main_label = Tk.Label(valve_frame,text = 'Main Valve',font = FONT)
