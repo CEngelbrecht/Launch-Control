@@ -12,7 +12,7 @@ Current things that need working on:
 
 logging
 perhaps adding a terminal in the main window to show history? 
-prettification/organization #karl's test commit
+prettification 
 Making a stand alone executable from this
 
 '''
