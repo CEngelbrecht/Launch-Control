@@ -13,12 +13,14 @@ Current things that need working on:
 logging
 perhaps adding a terminal in the main window to show history? 
 prettification 
+Making a stand alone executable from this
 
 '''
 
-server_IP = '192.168.1.33'
+server_IP = '192.168.1.33' #This is the IP of the ESB Pi. It is a static IP. 
 port = 5000
 BUFF = 1024
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class GUI:
