@@ -25,7 +25,7 @@ class GUI:
 
 	def __init__(self,master):
 		
-		FONT = ('Arial',20)
+		FONT = ('Arial',22)
 		self.master = master 
 		#master.wm_attributes('-zoomed',True)
 		master.title("Launch Control GUI")
