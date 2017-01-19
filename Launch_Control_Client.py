@@ -115,7 +115,6 @@ class GUI:
 		self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 		self.server_address = (server_IP,port)
 
-
 	def create_connection(self):
 
 		try: 
