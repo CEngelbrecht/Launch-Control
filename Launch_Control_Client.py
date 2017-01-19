@@ -32,22 +32,27 @@ class GUI:
 		self.master = master 
 		#master.wm_attributes('-zoomed',True)
 		master.title("Launch Control GUI")
-		
+
 		time_frame= Tk.Frame(master)
 		time_frame.pack(fill = 'x',side = 'top',expand = False)
+		time_frame.config(bd = 10, relief = Tk.RIDGE)
 
 		valve_frame = Tk.Frame(master)
 		valve_frame.pack(fill = 'x',side = 'left',expand = True)
 		#valve_frame.grid(row = 2, column = 0, sticky = 'SW')
+		valve_frame.config(bd = 10, relief = Tk.RIDGE)
 
 		connection_frame = Tk.Frame(master)
 		connection_frame.pack(fill = 'x',side = 'top',expand = True)
 		#connection_frame.grid(row = 0 ,column = 1,sticky= 'E')
+		connection_frame.config(bd = 10, relief = Tk.RIDGE)
 
-		launch_frame = Tk.Frame(master,)
+		launch_frame = Tk.Frame(master)
 		launch_frame.pack(fill = 'x', side = 'right',expand = True)
 		#launch_frame.grid(row = 1,column = 1,sticky= 'E')
+		launch_frame.config(bd = 10, relief = Tk.RIDGE)
 
+		#connection_frame code
 		close_button = Tk.Button(connection_frame, text = "Quit Application",font = FONT, command = lambda:self.exit(master))
 		close_button.pack(fill = 'both')
 		create_connection_button = Tk.Button(connection_frame,text = "Create Connection",font = FONT, command = self.create_connection)
@@ -57,36 +62,38 @@ class GUI:
 		listen_button = Tk.Button(connection_frame, text = "Read Statuses",font = FONT,command = self.get_info)
 		listen_button.pack(fill = 'both')
 
+		#launch_frame code
+		ignite_button = Tk.Button(launch_frame, text="Ignite!", font=FONT, command=lambda: self.send_info('Ig'))
+		ignite_button.pack(fill='both')
 		launch_button = Tk.Button(launch_frame,text = "Launch!", font = FONT,command =lambda:self.send_info('L'))
 		launch_button.pack(fill = 'both')
-		ignite_button = Tk.Button(launch_frame,text = "Ignite!", font = FONT,command =lambda:self.send_info('Ig'))
-		ignite_button.pack(fill = 'both')
 		abort_button = Tk.Button(launch_frame,text = "Abort!",font = FONT,command = lambda:self.send_info('A'))
 		abort_button.pack(fill = 'both')
 
 		#valve frame
 		breakwire_label = Tk.Label(valve_frame, text = "Breakwire Status",font = FONT)
-		breakwire_label.grid(row = 2, column = 0 ,sticky = 'W')
+		breakwire_label.grid(row = 2, column = 0 ,sticky = 'E')
 		#breakwire_label.pack(fill='both')
 		main_label = Tk.Label(valve_frame,text = 'Main Valve',font = FONT)
-		main_label.grid(row = 3, column = 0,sticky = 'W')
+		main_label.grid(row = 3, column = 0,sticky = 'E')
 		lox_label = Tk.Label(valve_frame,text = 'Lox Valve',font = FONT)
-		lox_label.grid(row = 4, column = 0,sticky = 'W')
+		lox_label.grid(row = 4, column = 0,sticky = 'E')
 		kero_label = Tk.Label(valve_frame,text = 'Kero Valve', font = FONT)
-		kero_label.grid(row = 5, column = 0,sticky = 'W')
+		kero_label.grid(row = 5, column = 0,sticky = 'E')
 		ignitor_label = Tk.Label(valve_frame, text = "Ignitor Status",font = FONT)
-		ignitor_label.grid(row = 6, column = 0)
+		ignitor_label.grid(row = 6, column = 0, sticky = 'E')
 
+		#status diaplyed
 		self.b_wire_status_label = Tk.Label(valve_frame,text = 'Intact', font = FONT,bg = 'green')
-		self.b_wire_status_label.grid(row = 2, column = 1)
+		self.b_wire_status_label.grid(row = 2, column = 1, sticky = 'W')
 		self.main_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
-		self.main_status_label.grid(row = 3, column = 1)
+		self.main_status_label.grid(row = 3, column = 1, sticky = 'W')
 		self.kero_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
-		self.kero_status_label.grid(row = 4, column = 1)
+		self.kero_status_label.grid(row = 4, column = 1, sticky = 'W')
 		self.lox_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
-		self.lox_status_label.grid(row = 5, column = 1)
+		self.lox_status_label.grid(row = 5, column = 1, sticky = 'W')
 		self.ignitor_status_label = Tk.Label(valve_frame,text = 'Not Lit', font = FONT,bg = 'green')
-		self.ignitor_status_label.grid(row = 6, column = 1)
+		self.ignitor_status_label.grid(row = 6, column = 1, sticky = 'W')
 
 		main_open_button = Tk.Button(valve_frame, text = "Open Main",font = FONT,command = lambda:self.send_info('MO'))
 		main_open_button.grid(row = 0 , column = 0)
@@ -213,4 +220,7 @@ class GUI:
 
 root = Tk.Tk()
 app = GUI(root)
+root.configure(background='black')
+#root.resizable(width=False, height=False)
+root.config(bd = 10)
 root.mainloop()
