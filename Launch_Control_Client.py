@@ -105,11 +105,8 @@ class GUI:
 		vent_close_button = Tk.Button(valve_frame, text = "Close Vents",font = FONT,command = lambda:self.send_info('VC'))
 		vent_close_button.grid(row = 1 , column = 1)
 
-<<<<<<< HEAD
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED, bg="red",bd = 5)#This label handles the time, and is updated more than once a second in the time_thread
-=======
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED,borderwidth = 3)#This label handles the time, and is updated more than once a second in the time_thread
->>>>>>> origin/master
 		self.time_label.pack()
 
 		time_thread = threading.Thread(target = self.get_time)
