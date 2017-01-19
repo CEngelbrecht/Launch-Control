@@ -35,7 +35,7 @@ class GUI:
 
 		time_frame= Tk.Frame(master)
 		time_frame.pack(fill = 'x',side = 'top',expand = False)
-		time_frame.config(bd = 10, relief = Tk.RIDGE)
+		time_frame.config(bd = 10, relief = Tk.FLAT, bg="black")
 
 		valve_frame = Tk.Frame(master)
 		valve_frame.pack(fill = 'x',side = 'left',expand = True)
@@ -53,21 +53,21 @@ class GUI:
 		launch_frame.config(bd = 10, relief = Tk.RIDGE)
 
 		#connection_frame code
-		close_button = Tk.Button(connection_frame, text = "Quit Application",font = FONT, command = lambda:self.exit(master))
+		close_button = Tk.Button(connection_frame, text = "Quit Application",font = FONT, bg = "firebrick", command = lambda:self.exit(master))
 		close_button.pack(fill = 'both')
-		create_connection_button = Tk.Button(connection_frame,text = "Create Connection",font = FONT, command = self.create_connection)
+		create_connection_button = Tk.Button(connection_frame,text = "Create Connection", bg = "firebrick", font = FONT, command = self.create_connection)
 		create_connection_button.pack(fill = 'both')
-		ping_button = Tk.Button(connection_frame,text = "Ping Server",font = FONT,command = self.ping_server)
+		ping_button = Tk.Button(connection_frame,text = "Ping Server",font = FONT, bg = "firebrick",command = self.ping_server)
 		ping_button.pack(fill = 'both')
-		listen_button = Tk.Button(connection_frame, text = "Read Statuses",font = FONT,command = self.get_info)
+		listen_button = Tk.Button(connection_frame, text = "Read Statuses",font = FONT, bg = "firebrick",command = self.get_info)
 		listen_button.pack(fill = 'both')
 
 		#launch_frame code
-		ignite_button = Tk.Button(launch_frame, text="Ignite!", font=FONT, command=lambda: self.send_info('Ig'))
+		ignite_button = Tk.Button(launch_frame, text="Ignite!", font=FONT, bg = "indian red", command=lambda: self.send_info('Ig'))
 		ignite_button.pack(fill='both')
-		launch_button = Tk.Button(launch_frame,text = "Launch!", font = FONT,command =lambda:self.send_info('L'))
+		launch_button = Tk.Button(launch_frame,text = "Launch!", font = FONT, bg = "indian red", command =lambda:self.send_info('L'))
 		launch_button.pack(fill = 'both')
-		abort_button = Tk.Button(launch_frame,text = "Abort!",font = FONT,command = lambda:self.send_info('A'))
+		abort_button = Tk.Button(launch_frame,text = "Abort!",font = FONT, bg = "indian red", command = lambda:self.send_info('A'))
 		abort_button.pack(fill = 'both')
 
 		#valve frame
@@ -104,7 +104,7 @@ class GUI:
 		vent_close_button = Tk.Button(valve_frame, text = "Close Vents",font = FONT,command = lambda:self.send_info('VC'))
 		vent_close_button.grid(row = 1 , column = 1)
 
-		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED)#This label handles the time, and is updated more than once a second in the time_thread
+		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED, bg="red",bd = 5)#This label handles the time, and is updated more than once a second in the time_thread
 		self.time_label.pack()
 
 		time_thread = threading.Thread(target = self.get_time)
