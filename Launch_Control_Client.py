@@ -64,9 +64,10 @@ class GUI:
 		abort_button = Tk.Button(launch_frame,text = "Abort!",font = FONT,command = lambda:self.send_info('A'))
 		abort_button.pack(fill = 'both')
 
-		#vakve frame
+		#valve frame
 		breakwire_label = Tk.Label(valve_frame, text = "Breakwire Status",font = FONT)
 		breakwire_label.grid(row = 2, column = 0 ,sticky = 'W')
+		#breakwire_label.pack(fill='both')
 		main_label = Tk.Label(valve_frame,text = 'Main Valve',font = FONT)
 		main_label.grid(row = 3, column = 0,sticky = 'W')
 		lox_label = Tk.Label(valve_frame,text = 'Lox Valve',font = FONT)
