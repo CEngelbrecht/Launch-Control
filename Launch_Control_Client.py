@@ -13,7 +13,7 @@ Current things that need working on:
 logging
 perhaps adding a terminal in the main window to show history? 
 prettification/organization
-code organization
+code organization	
 Making a stand alone executable from this
 
 '''
@@ -28,10 +28,11 @@ class GUI:
 
 	def __init__(self,master):
 		
-		FONT = ('Arial',22)
+		FONT = ('Helvetica',22)
 		self.master = master 
 		#master.wm_attributes('-zoomed',True)
 		master.title("Launch Control GUI")
+		master.configure(bg='black',bd = 10)
 
 		time_frame= Tk.Frame(master)
 		time_frame.pack(fill = 'x',side = 'top',expand = False)
@@ -83,7 +84,7 @@ class GUI:
 		ignitor_label = Tk.Label(valve_frame, text = "Ignitor Status",font = FONT)
 		ignitor_label.grid(row = 6, column = 0, sticky = 'E')
 
-		#status diaplyed
+		#status displyed
 		self.b_wire_status_label = Tk.Label(valve_frame,text = 'Intact', font = FONT,bg = 'green')
 		self.b_wire_status_label.grid(row = 2, column = 1, sticky = 'W')
 		self.main_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
@@ -104,7 +105,7 @@ class GUI:
 		vent_close_button = Tk.Button(valve_frame, text = "Close Vents",font = FONT,command = lambda:self.send_info('VC'))
 		vent_close_button.grid(row = 1 , column = 1)
 
-		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED)#This label handles the time, and is updated more than once a second in the time_thread
+		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED,borderwidth = 3)#This label handles the time, and is updated more than once a second in the time_thread
 		self.time_label.pack()
 
 		time_thread = threading.Thread(target = self.get_time)
@@ -117,7 +118,9 @@ class GUI:
 	def create_connection(self):
 
 		try: 
+			print 'yo'
 			self.s.connect(self.server_address)
+			print 'yo2'
 			tkMessageBox.showinfo('Connection Results','Socket Successfully Bound.\nClick "Read Statuses " to start')
 
 		except socket.error as e: 
@@ -125,6 +128,7 @@ class GUI:
 
 	def ping_server(self):
 
+		msg = tkMessageBox.showinfo('','Pinging...')
 		response  = subprocess.call(["ping", server_IP,"-c1", "-W1","-q"]) #This is Linux syntax.
 		#response = subprocess.call("ping {} -n 1 -w 1".format(server_IP)) #This is Windows syntax. 
 
@@ -220,7 +224,4 @@ class GUI:
 
 root = Tk.Tk()
 app = GUI(root)
-root.configure(background='black')
-#root.resizable(width=False, height=False)
-root.config(bd = 10)
 root.mainloop()
