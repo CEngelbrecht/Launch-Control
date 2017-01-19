@@ -90,9 +90,9 @@ class GUI:
 		self.main_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
 		self.main_status_label.grid(row = 3, column = 1, sticky = 'W')
 		self.kero_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
-		self.kero_status_label.grid(row = 4, column = 1, sticky = 'W')
+		self.kero_status_label.grid(row = 5, column = 1, sticky = 'W')
 		self.lox_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
-		self.lox_status_label.grid(row = 5, column = 1, sticky = 'W')
+		self.lox_status_label.grid(row = 4, column = 1, sticky = 'W')
 		self.ignitor_status_label = Tk.Label(valve_frame,text = 'Not Lit', font = FONT,bg = 'green')
 		self.ignitor_status_label.grid(row = 6, column = 1, sticky = 'W')
 
@@ -174,31 +174,31 @@ class GUI:
 				self.b_wire_status_label.config(text = 'Intact',bg = 'green')
 
 			self.s.send('main_status')
-			data = self.s.recv(BUFF)
-			if data == 'Closed':
+			mdata = self.s.recv(BUFF)
+			if mdata == 'Closed':
 				self.main_status_label.config(text = 'Closed',bg = 'red')
-			elif data == 'Open':
+			elif mdata == 'Open':
 				self.main_status_label.config(text = 'Open',bg = 'green')
 
 			self.s.send('kero_status')
-			data = self.s.recv(BUFF)
-			if data == 'Closed':
+			kdata = self.s.recv(BUFF)
+			if kdata == 'Closed':
 				self.kero_status_label.config(text = 'Closed',bg = 'red')
-			if data == 'Open':
+			if kdata == 'Open':
 				self.kero_status_label.config(text = 'Open',bg = 'green')
 
 			self.s.send('LOX_status')
-			data = self.s.recv(BUFF)
-			if data == 'Closed':
+			ldata = self.s.recv(BUFF)
+			if ldata == 'Closed':
 				self.lox_status_label.config(text = 'Closed',bg = 'red')
-			if data == 'Open':
+			if ldata == 'Open':
 				self.lox_status_label.config(text = 'Open',bg = 'green')
 
 		except socket.error as err:
 			print err
 
-		if not err: 
-			self.master.after(200,self.get_info) #If there is not a connection issue, update info every 200 ms
+		#if not err:
+		#	self.master.after(200,self.get_info) #If there is not a connection issue, update info every 200 ms
 
 	def get_time(self):
 
