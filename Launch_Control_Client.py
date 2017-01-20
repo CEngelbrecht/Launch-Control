@@ -118,9 +118,7 @@ class GUI:
 	def create_connection(self):
 
 		try: 
-			print 'yo'
 			self.s.connect(self.server_address)
-			print 'yo2'
 			tkMessageBox.showinfo('Connection Results','Socket Successfully Bound.\nClick "Read Statuses " to start')
 
 		except socket.error as e: 
