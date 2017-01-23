@@ -57,6 +57,9 @@ class GUI:
 		#launch_frame.grid(row = 1,column = 1,sticky= 'E')
 		launch_frame.config(bd = 10, relief = Tk.RIDGE)
 
+		def empty_Label_Method():
+			self.empty_label = Tk.Label(launch_frame)
+			self.empty_label.pack(fill = 'both')
 
 		#Safety Frame code
 		self.safety_button = Tk.Button(safety_frame, text = 'Toggle Safety: ', font = FONT,command = self.safety_switch)
@@ -81,15 +84,16 @@ class GUI:
 		#launch_frame code
 		self.ignite_button = Tk.Button(launch_frame, text="Ignite!", font=FONT, bg = "indian red", command=lambda: self.send_info('Ig'),state = 'disabled')
 		self.ignite_button.pack(fill='both')
+		empty_Label_Method()
 		self.launch_button = Tk.Button(launch_frame,text = "Launch!", font = FONT, bg = "indian red", command =lambda:self.send_info('L'),state = 'disabled')
 		self.launch_button.pack(fill = 'both')
+		empty_Label_Method()
 		self.abort_button = Tk.Button(launch_frame,text = "Abort!",font = FONT, bg = "indian red", command = lambda:self.send_info('A'),state = 'disabled')
 		self.abort_button.pack(fill = 'both')
 
 		#valve frame
 		breakwire_label = Tk.Label(valve_frame, text = "Breakwire Status",font = FONT)
 		breakwire_label.grid(row = 1, column = 0 ,sticky = 'E')
-		#breakwire_label.pack(fill='both')
 		main_label = Tk.Label(valve_frame,text = 'Main Valve',font = FONT)
 		main_label.grid(row = 2, column = 0,sticky = 'E')
 		lox_label = Tk.Label(valve_frame,text = 'Lox Valve',font = FONT)
@@ -115,6 +119,8 @@ class GUI:
 		self.vent_open_button.grid(row = 6 , column = 0, stick = 'W' + 'E')
 		self.vent_close_button = Tk.Button(valve_frame, text = "Close Vents",font = FONT,command = lambda:self.send_info('VC'))
 		self.vent_close_button.grid(row = 6 , column = 1, stick = 'W' + 'E')
+		self.main_close_button = Tk.Button(valve_frame, text = "Close Main", font = FONT,command = lambda:self.send_info('MC'))
+		self.main_close_button.grid(row = 7, column = 1, stick = 'W' + 'E')
 
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED, bg="red",bd = 5)#This label handles the time, and is updated more than once a second in the time_thread
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED,borderwidth = 3)#This label handles the time, and is updated more than once a second in the time_thread
