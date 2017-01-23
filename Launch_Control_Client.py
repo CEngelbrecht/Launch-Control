@@ -38,6 +38,10 @@ class GUI:
 		time_frame.pack(fill = 'x',side = 'top',expand = False)
 		time_frame.config(bd = 10, relief = Tk.FLAT, bg="black")
 
+		safety_frame = Tk.Frame(master)
+		safety_frame.pack(fill = 'x', side = 'top',expand = True)
+		safety_frame.config(bd = 10,relief = Tk.RIDGE)
+
 		valve_frame = Tk.Frame(master)
 		valve_frame.pack(fill = 'x',side = 'left',expand = True)
 		#valve_frame.grid(row = 2, column = 0, sticky = 'SW')
@@ -53,6 +57,17 @@ class GUI:
 		#launch_frame.grid(row = 1,column = 1,sticky= 'E')
 		launch_frame.config(bd = 10, relief = Tk.RIDGE)
 
+
+		#Safety Frame code
+		self.safety_button = Tk.Button(safety_frame, text = 'Toggle Safety: ', font = FONT,command = self.safety_switch)
+		self.safety_label = Tk.Label(safety_frame, text = 'Safety Status: Disarmed', font = FONT, bg = 'red')
+		self.connection_status_label1 = Tk.Label(safety_frame, text = 'Connection Status: ',font = FONT)
+		self.connection_status_label2 = Tk.Label(safety_frame, text = 'Not Connected',bg = 'green',font = FONT)
+		self.connection_status_label1.grid(row = 1, column = 0, sticky = 'W' + 'E')
+		self.connection_status_label2.grid(row = 1 ,column = 1, sticky = 'W' + 'E')
+		self.safety_button.grid(row = 0, column = 0,sticky = 'W' + 'E')
+		self.safety_label.grid(row = 0 , column = 1,sticky = 'W' + 'E')
+
 		#connection_frame code
 		close_button = Tk.Button(connection_frame, text = "Quit Application",font = FONT, bg = "firebrick", command = lambda:self.exit(master))
 		close_button.pack(fill = 'both')
@@ -64,64 +79,69 @@ class GUI:
 		listen_button.pack(fill = 'both')
 
 		#launch_frame code
-		ignite_button = Tk.Button(launch_frame, text="Ignite!", font=FONT, bg = "indian red", command=lambda: self.send_info('Ig'))
-		ignite_button.pack(fill='both')
-		launch_button = Tk.Button(launch_frame,text = "Launch!", font = FONT, bg = "indian red", command =lambda:self.send_info('L'))
-		launch_button.pack(fill = 'both')
-		abort_button = Tk.Button(launch_frame,text = "Abort!",font = FONT, bg = "indian red", command = lambda:self.send_info('A'))
-		abort_button.pack(fill = 'both')
+		self.ignite_button = Tk.Button(launch_frame, text="Ignite!", font=FONT, bg = "indian red", command=lambda: self.send_info('Ig'),state = 'disabled')
+		self.ignite_button.pack(fill='both')
+		self.launch_button = Tk.Button(launch_frame,text = "Launch!", font = FONT, bg = "indian red", command =lambda:self.send_info('L'),state = 'disabled')
+		self.launch_button.pack(fill = 'both')
+		self.abort_button = Tk.Button(launch_frame,text = "Abort!",font = FONT, bg = "indian red", command = lambda:self.send_info('A'),state = 'disabled')
+		self.abort_button.pack(fill = 'both')
 
 		#valve frame
 		breakwire_label = Tk.Label(valve_frame, text = "Breakwire Status",font = FONT)
-		breakwire_label.grid(row = 2, column = 0 ,sticky = 'E')
+		breakwire_label.grid(row = 1, column = 0 ,sticky = 'E')
 		#breakwire_label.pack(fill='both')
 		main_label = Tk.Label(valve_frame,text = 'Main Valve',font = FONT)
-		main_label.grid(row = 3, column = 0,sticky = 'E')
+		main_label.grid(row = 2, column = 0,sticky = 'E')
 		lox_label = Tk.Label(valve_frame,text = 'Lox Valve',font = FONT)
-		lox_label.grid(row = 4, column = 0,sticky = 'E')
+		lox_label.grid(row = 3, column = 0,sticky = 'E')
 		kero_label = Tk.Label(valve_frame,text = 'Kero Valve', font = FONT)
-		kero_label.grid(row = 5, column = 0,sticky = 'E')
+		kero_label.grid(row = 4, column = 0,sticky = 'E')
 		ignitor_label = Tk.Label(valve_frame, text = "Ignitor Status",font = FONT)
-		ignitor_label.grid(row = 6, column = 0, sticky = 'E')
+		ignitor_label.grid(row = 5, column = 0, sticky = 'E')
 
 		#status displyed
 		self.b_wire_status_label = Tk.Label(valve_frame,text = 'Intact', font = FONT,bg = 'green')
-		self.b_wire_status_label.grid(row = 2, column = 1, sticky = 'W' + 'E')
+		self.b_wire_status_label.grid(row = 1, column = 1, sticky = 'W' + 'E')
 		self.main_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
-		self.main_status_label.grid(row = 3, column = 1, sticky = 'W' + 'E')
+		self.main_status_label.grid(row = 2, column = 1, sticky = 'W' + 'E')
 		self.kero_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
-		self.kero_status_label.grid(row = 5, column = 1, sticky = 'W' + 'E')
+		self.kero_status_label.grid(row = 4, column = 1, sticky = 'W' + 'E')
 		self.lox_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
-		self.lox_status_label.grid(row = 4, column = 1, sticky = 'W' + 'E')
+		self.lox_status_label.grid(row = 3, column = 1, sticky = 'W' + 'E')
 		self.ignitor_status_label = Tk.Label(valve_frame,text = 'Not Lit', font = FONT,bg = 'green')
-		self.ignitor_status_label.grid(row = 6, column = 1, sticky = 'W' + 'E')
+		self.ignitor_status_label.grid(row = 5, column = 1, sticky = 'W' + 'E')
 
-		main_open_button = Tk.Button(valve_frame, text = "Open Main",font = FONT,command = lambda:self.send_info('MO'))
-		main_open_button.grid(row = 0 , column = 0,  stick = 'W' + 'E')
-		main_close_button = Tk.Button(valve_frame, text = "Close Main",font = FONT,command = lambda:self.send_info('MC'))
-		main_close_button.grid(row = 0 , column = 1, stick = 'W' + 'E')
-		vent_open_button = Tk.Button(valve_frame, text = "Open Vents",font = FONT,command = lambda:self.send_info('VO'))
-		vent_open_button.grid(row = 1 , column = 0, stick = 'W' + 'E')
-		vent_close_button = Tk.Button(valve_frame, text = "Close Vents",font = FONT,command = lambda:self.send_info('VC'))
-		vent_close_button.grid(row = 1 , column = 1, stick = 'W' + 'E')
+		self.vent_open_button = Tk.Button(valve_frame, text = "Open Vents",font = FONT,command = lambda:self.send_info('VO'))
+		self.vent_open_button.grid(row = 6 , column = 0, stick = 'W' + 'E')
+		self.vent_close_button = Tk.Button(valve_frame, text = "Close Vents",font = FONT,command = lambda:self.send_info('VC'))
+		self.vent_close_button.grid(row = 6 , column = 1, stick = 'W' + 'E')
 
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED, bg="red",bd = 5)#This label handles the time, and is updated more than once a second in the time_thread
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED,borderwidth = 3)#This label handles the time, and is updated more than once a second in the time_thread
 		self.time_label.pack()
 
-		time_thread = threading.Thread(target = self.get_time)
-		time_thread.start()
-
 		self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 		self.server_address = (server_IP,port)
+		self.connection_status = False #initialzing to a false state
+
+	def safety_switch(self): 
+
+		if self.connection_status == True:
+			self.ignite_button.config(state = 'normal')
+			self.launch_button.config(state = 'normal')
+			self.abort_button.config(state = 'normal')
+			self.safety_label.config(text = "Safety Staus: Armed", bg = 'green')
+
+		elif self.connection_status == False:
+			msg = tkMessageBox.showerror('Connection Error','Safety will not toggle unless client is connected to server')
 
 	def create_connection(self):
 
 		try: 
-			print 'yo'
 			self.s.connect(self.server_address)
-			print 'yo2'
 			tkMessageBox.showinfo('Connection Results','Socket Successfully Bound.\nClick "Read Statuses " to start')
+			self.connection_status = True
+			self.connection_status_label.config (text = 'Connection Status: Connected',bg = 'green')
 
 		except socket.error as e: 
 			msg = tkMessageBox.showerror("Connection Results", "Couldn't connect to {} at {}: error is {}.\nMake sure server is listening.".format(self.server_address[0],self.server_address[1],e))
@@ -224,4 +244,5 @@ class GUI:
 
 root = Tk.Tk()
 app = GUI(root)
+app.get_time()
 root.mainloop()
