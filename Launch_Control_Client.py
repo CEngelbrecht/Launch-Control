@@ -62,7 +62,7 @@ class GUI:
 		self.safety_button = Tk.Button(safety_frame, text = 'Toggle Safety: ', font = FONT,command = self.safety_switch)
 		self.safety_label = Tk.Label(safety_frame, text = 'Safety Status: Disarmed', font = FONT, bg = 'red')
 		self.connection_status_label1 = Tk.Label(safety_frame, text = 'Connection Status: ',font = FONT)
-		self.connection_status_label2 = Tk.Label(safety_frame, text = 'Not Connected',bg = 'green',font = FONT)
+		self.connection_status_label2 = Tk.Label(safety_frame, text = 'Not Connected',bg = 'red',font = FONT)
 		self.connection_status_label1.grid(row = 1, column = 0, sticky = 'W' + 'E')
 		self.connection_status_label2.grid(row = 1 ,column = 1, sticky = 'W' + 'E')
 		self.safety_button.grid(row = 0, column = 0,sticky = 'W' + 'E')
