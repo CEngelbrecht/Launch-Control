@@ -86,24 +86,24 @@ class GUI:
 
 		#status displyed
 		self.b_wire_status_label = Tk.Label(valve_frame,text = 'Intact', font = FONT,bg = 'green')
-		self.b_wire_status_label.grid(row = 2, column = 1, sticky = 'W')
+		self.b_wire_status_label.grid(row = 2, column = 1, sticky = 'W' + 'E')
 		self.main_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
-		self.main_status_label.grid(row = 3, column = 1, sticky = 'W')
+		self.main_status_label.grid(row = 3, column = 1, sticky = 'W' + 'E')
 		self.kero_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
-		self.kero_status_label.grid(row = 5, column = 1, sticky = 'W')
+		self.kero_status_label.grid(row = 5, column = 1, sticky = 'W' + 'E')
 		self.lox_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
-		self.lox_status_label.grid(row = 4, column = 1, sticky = 'W')
+		self.lox_status_label.grid(row = 4, column = 1, sticky = 'W' + 'E')
 		self.ignitor_status_label = Tk.Label(valve_frame,text = 'Not Lit', font = FONT,bg = 'green')
-		self.ignitor_status_label.grid(row = 6, column = 1, sticky = 'W')
+		self.ignitor_status_label.grid(row = 6, column = 1, sticky = 'W' + 'E')
 
 		main_open_button = Tk.Button(valve_frame, text = "Open Main",font = FONT,command = lambda:self.send_info('MO'))
-		main_open_button.grid(row = 0 , column = 0)
+		main_open_button.grid(row = 0 , column = 0,  stick = 'W' + 'E')
 		main_close_button = Tk.Button(valve_frame, text = "Close Main",font = FONT,command = lambda:self.send_info('MC'))
-		main_close_button.grid(row = 0 , column = 1)
+		main_close_button.grid(row = 0 , column = 1, stick = 'W' + 'E')
 		vent_open_button = Tk.Button(valve_frame, text = "Open Vents",font = FONT,command = lambda:self.send_info('VO'))
-		vent_open_button.grid(row = 1 , column = 0)
+		vent_open_button.grid(row = 1 , column = 0, stick = 'W' + 'E')
 		vent_close_button = Tk.Button(valve_frame, text = "Close Vents",font = FONT,command = lambda:self.send_info('VC'))
-		vent_close_button.grid(row = 1 , column = 1)
+		vent_close_button.grid(row = 1 , column = 1, stick = 'W' + 'E')
 
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED, bg="red",bd = 5)#This label handles the time, and is updated more than once a second in the time_thread
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED,borderwidth = 3)#This label handles the time, and is updated more than once a second in the time_thread
