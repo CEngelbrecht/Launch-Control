@@ -44,22 +44,22 @@ class GUI:
 
 		safety_frame = Tk.Frame(master)
 		safety_frame.pack(fill = 'x', side = 'top',expand = True)
-		safety_frame.config(bd = 10,relief = Tk.RIDGE)
+		safety_frame.config(bd = 10,relief = Tk.RAISED)
 
 		valve_frame = Tk.Frame(master)
 		valve_frame.pack(fill = 'x',side = 'left',expand = True)
 		#valve_frame.grid(row = 2, column = 0, sticky = 'SW')
-		valve_frame.config(bd = 10, relief = Tk.RIDGE)
+		valve_frame.config(bd = 10, relief = Tk.RAISED)
 
 		connection_frame = Tk.Frame(master)
 		connection_frame.pack(fill = 'x',side = 'top',expand = True)
 		#connection_frame.grid(row = 0 ,column = 1,sticky= 'E')
-		connection_frame.config(bd = 10, relief = Tk.RIDGE)
+		connection_frame.config(bd = 10, relief = Tk.RAISED)
 
 		launch_frame = Tk.Frame(master)
 		launch_frame.pack(fill = 'x', side = 'right',expand = True)
 		#launch_frame.grid(row = 1,column = 1,sticky= 'E')
-		launch_frame.config(bd = 10, relief = Tk.RIDGE)
+		launch_frame.config(bd = 10, relief = Tk.RAISED)
 
 		def empty_Label_Method():
 			self.empty_label = Tk.Label(launch_frame)
