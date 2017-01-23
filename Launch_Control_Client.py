@@ -122,15 +122,25 @@ class GUI:
 
 		self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 		self.server_address = (server_IP,port)
-		self.connection_status = False #initialzing to a false state
+		self.connection_status = True #initialzing to a false connection state
+		self.arm_status = False
 
 	def safety_switch(self): 
 
 		if self.connection_status == True:
-			self.ignite_button.config(state = 'normal')
-			self.launch_button.config(state = 'normal')
-			self.abort_button.config(state = 'normal')
-			self.safety_label.config(text = "Safety Staus: Armed", bg = 'green')
+			if self.arm_status == False: 
+				self.ignite_button.config(state = 'normal')
+				self.launch_button.config(state = 'normal')
+				self.abort_button.config(state = 'normal')
+				self.safety_label.config(text = "Safety Staus: Armed", bg = 'green')
+				self.arm_status = True
+
+			elif self.arm_status == True:
+				self.ignite_button.config(state = 'disabled')
+				self.launch_button.config(state = 'disabled')
+				self.abort_button.config(state = 'disabled')
+				self.safety_label.config(text = "Safety Staus: Disarmed", bg = 'red')
+				self.arm_status = False #Switch arm state
 
 		elif self.connection_status == False:
 			msg = tkMessageBox.showerror('Connection Error','Safety will not toggle unless client is connected to server')
