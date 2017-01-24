@@ -273,14 +273,15 @@ def abort():
 
 while True:
 
-	conn,addr = s.accept()
+	try: 
+		conn,addr = s.accept()
 
-	print ("Connection established.")
-	print 'Connection address: ',addr
-	print ("Awaiting commands... \n")
+		print ("Connection established.")
+		print 'Connection address: ',addr
+		print ("Awaiting commands... \n")
 
-	while True:
 		data = conn.recv(BUF)
+		
 		if not data: break
 
 		if 'toggle_record' in data:
@@ -356,8 +357,13 @@ while True:
 			r_LOX_trd = threading.Thread(target=LOX_Valve_Sensor())
 			r_LOX_trd.start()
 
-	print("connection closing... \n")
-	conn.close()
+	except socket.error as e: 
+		pass #Just catching a socket error. 
+
+	#Update 2017-01-23: Pretty sure we never want the connection to be closed, since client have have interrupts
+	#but still have the possibility of reconnecting to server without restarting it.  
+	#print("connection closing... \n")
+	#conn.close()
 		
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # End Script
