@@ -22,6 +22,8 @@ server_IP = '192.168.1.33' #This is the IP of the ESB Pi. It is a static IP.
 port = 5000
 BUFF = 1024
 
+logging.basicConfig(filename = 'LC_Client_Log.txt',level = logging.INFO)
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class GUI:
@@ -78,7 +80,7 @@ class GUI:
 		create_connection_button.pack(fill = 'both')
 		ping_button = Tk.Button(connection_frame,text = "Ping Server",font = FONT, bg = "firebrick",command = self.ping_server)
 		ping_button.pack(fill = 'both')
-		listen_button = Tk.Button(connection_frame, text = "Read Statuses",font = FONT, bg = "firebrick",command = self.get_info)
+		listen_button = Tk.Button(connection_frame, text = "Start Reading Statuses",font = FONT, bg = "firebrick",command = self.get_info)
 		listen_button.pack(fill = 'both')
 
 		#launch_frame code
@@ -126,9 +128,12 @@ class GUI:
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED,borderwidth = 3)#This label handles the time, and is updated more than once a second in the time_thread
 		self.time_label.pack()
 
-		self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+		time_thread = threading.Thread(target = self.get_time)
+		time_thread.start()
+
+		#self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 		self.server_address = (server_IP,port)
-		self.connection_status = True #initialzing to a false connection state
+		self.connection_status = False #initialzing to a false connection state
 		self.arm_status = False
 
 	def safety_switch(self): 
@@ -154,13 +159,13 @@ class GUI:
 	def create_connection(self):
 
 		try: 
-			self.s.connect(self.server_address)
+			self.s = socket.create_connection(self.server_address,timeout = 1.5)
 			tkMessageBox.showinfo('Connection Results','Socket Successfully Bound.\nClick "Read Statuses " to start')
 			self.connection_status = True
-			self.connection_status_label.config (text = 'Connection Status: Connected',bg = 'green')
+			self.connection_status_label2.config (text ='Connected',bg = 'green')
 
 		except socket.error as e: 
-			msg = tkMessageBox.showerror("Connection Results", "Couldn't connect to {} at {}: error is {}.\nMake sure server is listening.".format(self.server_address[0],self.server_address[1],e))
+			msg = tkMessageBox.showerror("Connection Results", "Couldn't connect to {} at {}. Error is: \n{}.\nMake sure server is listening.".format(self.server_address[0],self.server_address[1],e))
 
 	def ping_server(self):
 
@@ -193,54 +198,82 @@ class GUI:
 
 		self.s.send(message)
 		data = self.s.recv(BUFF)
+		time_now = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
 		if data == 'Ignitor 1 Lit':
+			time_now = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
 			self.ignitor_status_label.config(text = 'Lit af', bg = 'red')
+			logging.info("Ignitor 1 lit: {}".format(time_now))
 		elif data == 'Ignitor 1 Off':
-			self.ignitor_status_label.config(text = 'Not Lit', bg = 'green')
+			self.ignitor_status_label.config(text = 'Not Lit', bg = 'green')			
 
+
+	def switch_label(self,label):
+
+		#These statements change the status of the labels 
+		if label == 'bwire':
+			if self.b_wire_status_label['text'] == 'Intact':
+				self.b_wire_status_label.config(text = 'Broken',bg = 'red')
+			elif self.b_wire_status_lbagetel['text'] == 'Broken':
+				self.b_wire_status_label.config(text = 'Intact',bg = 'green')
+
+		if label == 'main':
+			if self.b_wire_status_label['text'] == 'Open':
+				self.b_wire_status_label.config(text = 'Closed',bg = 'red')
+			elif self.b_wire_status_label['text'] == 'Closed':
+				self.b_wire_status_label.config(text = 'Open',bg = 'green')
+
+		if label == 'kero':
+			if self.b_wire_status_label['text'] == 'Open':
+				self.b_wire_status_label.config(text = 'Closed',bg = 'red')
+			elif self.b_wire_status_label['text'] == 'Closed':
+				self.b_wire_status_label.config(text = 'Open',bg = 'green')
+
+		if label == "lox":
+			if self.b_wire_status_label['text'] == 'Open':
+				self.b_wire_status_label.config(text = 'Closed',bg = 'red')
+			elif self.b_wire_status_label['text'] == 'Closed':
+				self.b_wire_status_label.config(text = 'Open',bg = 'green')
 
 	def get_info(self):
 
 		try: 
 			self.s.send('bwire_status')
-			data = self.s.recv(BUFF)
-			if data == 'Broken':
-				self.b_wire_status_label.config(text = 'Broken',bg = 'red')
-			elif data == 'Intact':
-				self.b_wire_status_label.config(text = 'Intact',bg = 'green')
+			bdata = self.s.recv(BUFF)
 
 			self.s.send('main_status')
 			mdata = self.s.recv(BUFF)
-			if mdata == 'Closed':
-				self.main_status_label.config(text = 'Closed',bg = 'red')
-			elif mdata == 'Open':
-				self.main_status_label.config(text = 'Open',bg = 'green')
 
 			self.s.send('kero_status')
 			kdata = self.s.recv(BUFF)
-			if kdata == 'Closed':
-				self.kero_status_label.config(text = 'Closed',bg = 'red')
-			if kdata == 'Open':
-				self.kero_status_label.config(text = 'Open',bg = 'green')
 
 			self.s.send('LOX_status')
 			ldata = self.s.recv(BUFF)
-			if ldata == 'Closed':
-				self.lox_status_label.config(text = 'Closed',bg = 'red')
-			if ldata == 'Open':
-				self.lox_status_label.config(text = 'Open',bg = 'green')
 
-		except socket.error as err:
-			print err
+		except (socket.error,AttributeError) as err:
+			time_now = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
+			logging.error("{},{}".format(time_now,err))
 
-		#if not err:
-		#	self.master.after(200,self.get_info) #If there is not a connection issue, update info every 200 ms
+		#The following if statements call the label to be changed only if the server sends a message that contradicts the current status of the label 
+
+		if bdata != self.b_wire_status_label['text']:
+			self.switch_label("bwire")
+
+		if mdata != self.main_status_label['text']:
+			self.switch_label('main')
+
+		if kdata != self.kero_status_label['text']:
+			self.switch_label('kero')
+
+		if ldata != self.lox_status_label['text']:
+			self.switch_label('kero')
+
+		self.master.after(200,self.get_info)
 
 	def get_time(self):
 
 		time_now = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
 		self.time_label.config(text = time_now)
-		self.master.after(800,self.get_time) #Call this method every 800 ms to update the time label
+		self.master.after(400,self.get_time) #Call this method every 800 ms to update the time label
 
 	def exit(self,master):
 
@@ -248,10 +281,10 @@ class GUI:
 
 		if msg == 'yes':
 			try:
-				self.s.shutdown(socket.SHUT_RDWR) #Closes and destroys sockets.
+				self.s.shutdown(socket.SHUT_RDWR) #Close and destroy 
 				self.s.close()
-			except socket.error as e: #If the connection wasn't made, then this path is taken.
-				pass
+			except (socket.error, AttributeError) as e: #If the connection wasn't made, then this path is taken.
+				print e
 
 			master.quit()
 			master.destroy() #Need both for some reason
@@ -260,5 +293,4 @@ class GUI:
 
 root = Tk.Tk()
 app = GUI(root)
-app.get_time()
 root.mainloop()
