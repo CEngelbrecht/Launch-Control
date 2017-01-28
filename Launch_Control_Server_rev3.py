@@ -5,7 +5,7 @@ import os
 import RPi.GPIO as GPIO
 import SimpleHTTPServer
 import SocketServer
-import Adafruit_GPI O.SPI as SPI
+import Adafruit_GPIO.SPI as SPI
 import Adafruit_MAX31855.MAX31855 as MAX31855
 import threading
 
@@ -106,7 +106,7 @@ def Thermo_read():
 		temp = sensor.readTempC()
 		internal = sensor.readInternalC()
 		Temperature = c_to_f(temp)
-			send(str(Temperature))
+		conn.send(str(Temperature))
 
 		return
 
@@ -116,49 +116,57 @@ def Breakwire_read():
 	# is intact and that the breakwire has not been broken yet.
 	# The state of the breakwire is sent over the TCP connection
 
-		if GPIO.input(b_wire) == True:
-			bwire = 'Intact'
-			conn.send(str(bwire))
-		elif GPIO.input(b_wire) == False:
-			bwire = 'Broken'
-			conn.send(str(bwire))
-		return
+	if GPIO.input(b_wire) == True:
+		bwire = 'Intact'
+		print "sending b_wire status"
+		conn.send(str(bwire))
+		print "sent b_wire status"
+	elif GPIO.input(b_wire) == False:
+		bwire = 'Broken'
+		conn.send(str(bwire))
+		print "Sent b_wire status of {}".format(bwire)
+	return
 
 def Main_Valve_Sensor():
 
 	# Function that reads the magnetic reed switch on board the rocket at the main fuel valves
+	print "in Main sensor function"
 
-		if GPIO.input(r_main) == True:
-			main_status = 'Open'
-			conn.send(str(main_status))
-		elif GPIO.input(r_main) == False:
-			main_status = 'Closed'
-			conn.send(str(main_status))
-		return
+	if GPIO.input(r_main) == True:
+		main_status = 'Open'
+		print "main is open: sending status"
+		conn.send(str(main_status))
+		print "Sent status of {}".format(main_status)
+	elif GPIO.input(r_main) == False:
+		main_status = 'Closed'
+		print "main is closed: sending status"
+		conn.send(str(main_status))
+		print "Sent status of {}".format(main_status)
+	return
 
 def LOX_Valve_Sensor():
 
 	# Function that reads the magnetic reed switch on board the rocket at the LOX valve
 
-		if GPIO.input(r_LOX) == True:
-			LOX_status = 'Open'
-			conn.send(str(LOX_status))
-		elif GPIO.input(r_LOX) == False:
-			LOX_status = 'Closed'
-			conn.send(str(LOX_status))
-		return
+	if GPIO.input(r_LOX) == True:
+		LOX_status = 'Open'
+		conn.send(str(LOX_status))
+	elif GPIO.input(r_LOX) == False:
+		LOX_status = 'Closed'
+		conn.send(str(LOX_status))
+	return
 
 def Kero_Valve_Sensor():
 
 	# Function that reads the magnetic reed switch on board the rocket at the Kerosene valve
 
-		if GPIO.input(r_kero) == True:
-			kero_status = 'Open'
-			conn.send(str(kero_status))
-		elif GPIO.input(r_kero) == False:
-			kero_status = 'Closed'
-			conn.send(str(kero_status))
-		return
+	if GPIO.input(r_kero) == True:
+		kero_status = 'Open'
+		conn.send(str(kero_status))
+	elif GPIO.input(r_kero) == False:
+		kero_status = 'Closed'
+		conn.send(str(kero_status))
+	return
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Relay and Communication
@@ -272,17 +280,20 @@ def abort():
 # use the target function specified to send sensor information back to the client software.
 
 while True:
+	 
+	conn,addr = s.accept()
 
-	try: 
-		conn,addr = s.accept()
+	print ("Connection established.")
+	print 'Connection address: ',addr
+	print ("Awaiting commands... \n")
 
-		print ("Connection established.")
-		print 'Connection address: ',addr
-		print ("Awaiting commands... \n")
+	data = conn.recv(BUF)
 
-		data = conn.recv(BUF)
-		
+	while True: 
+			
 		if not data: break
+
+		print data
 
 		if 'toggle_record' in data:
 			print "Received data: ",data
@@ -344,10 +355,12 @@ while True:
 		elif 'bwire_status' in data:
 			bwire_trd = threading.Thread(target=Breakwire_read())
 			bwire_trd.start()
-			
+			print "B_Wire_Thread Started"
+		print "Started R_Main_Thread"	
 		elif 'main_status' in data:
 			r_main_trd = threading.Thread(target=Main_Valve_Sensor())
 			r_main_trd.start()
+			print "Started R_Main_Thread"
 
 		elif 'kero_status' in data:
 			r_kero_trd = threading.Thread(target=Kero_Valve_Sensor())
@@ -357,14 +370,9 @@ while True:
 			r_LOX_trd = threading.Thread(target=LOX_Valve_Sensor())
 			r_LOX_trd.start()
 
-	except socket.error as e: 
-		pass #Just catching a socket error. 
-
-	#Update 2017-01-23: Pretty sure we never want the connection to be closed, since client have have interrupts
-	#but still have the possibility of reconnecting to server without restarting it.  
-	#print("connection closing... \n")
-	#conn.close()
-		
+	print("connection closing... \n")
+	conn.close()
+			
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # End Script
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
