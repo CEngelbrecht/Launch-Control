@@ -128,6 +128,11 @@ class GUI:
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED,borderwidth = 3)#This label handles the time, and is updated more than once a second in the time_thread
 		self.time_label.pack()
 
+		self.kdata = "Open"
+		self.mdata = "Open"
+		self.ldata = "Open"
+		self.bdata = "Intact"
+
 		time_thread = threading.Thread(target = self.get_time)
 		time_thread.start()
 
@@ -217,55 +222,54 @@ class GUI:
 				self.b_wire_status_label.config(text = 'Intact',bg = 'green')
 
 		if label == 'main':
-			if self.b_wire_status_label['text'] == 'Open':
-				self.b_wire_status_label.config(text = 'Closed',bg = 'red')
-			elif self.b_wire_status_label['text'] == 'Closed':
-				self.b_wire_status_label.config(text = 'Open',bg = 'green')
+			if self.main_status_label['text'] == 'Open':
+				self.main_status_label.config(text = 'Closed',bg = 'red')
+			elif self.main_status_label['text'] == 'Closed':
+				self.main_status_label.config(text = 'Open',bg = 'green')
 
 		if label == 'kero':
-			if self.b_wire_status_label['text'] == 'Open':
-				self.b_wire_status_label.config(text = 'Closed',bg = 'red')
-			elif self.b_wire_status_label['text'] == 'Closed':
-				self.b_wire_status_label.config(text = 'Open',bg = 'green')
+			if self.kero_status_label['text'] == 'Open':
+				self.kero_status_label.config(text = 'Closed',bg = 'red')
+			elif self.kero_status_label['text'] == 'Closed':
+				self.kero_status_label.config(text = 'Open',bg = 'green')
 
 		if label == "lox":
-			if self.b_wire_status_label['text'] == 'Open':
-				self.b_wire_status_label.config(text = 'Closed',bg = 'red')
-			elif self.b_wire_status_label['text'] == 'Closed':
-				self.b_wire_status_label.config(text = 'Open',bg = 'green')
+			if self.lox_status_label['text'] == 'Open':
+				self.lox_status_label.config(text = 'Closed',bg = 'red')
+			elif self.lox_status_label['text'] == 'Closed':
+				self.lox_status_label.config(text = 'Open',bg = 'green')
 
 	def get_info(self):
-
+		
 		try: 
 			self.s.send('bwire_status')
-			bdata = self.s.recv(BUFF)
+			self.bdata = self.s.recv(BUFF)
 
 			self.s.send('main_status')
-			mdata = self.s.recv(BUFF)
+			self.mdata = self.s.recv(BUFF)
 
 			self.s.send('kero_status')
-			kdata = self.s.recv(BUFF)
+			self.kdata = self.s.recv(BUFF)
 
 			self.s.send('LOX_status')
-			ldata = self.s.recv(BUFF)
+			self.ldata = self.s.recv(BUFF)
 
 		except (socket.error,AttributeError) as err:
 			time_now = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
 			logging.error("{},{}".format(time_now,err))
 
 		#The following if statements call the label to be changed only if the server sends a message that contradicts the current status of the label 
-
-		if bdata != self.b_wire_status_label['text']:
+		if self.bdata != self.b_wire_status_label['text']:
 			self.switch_label("bwire")
 
-		if mdata != self.main_status_label['text']:
+		if self.mdata != self.main_status_label['text']:
 			self.switch_label('main')
 
-		if kdata != self.kero_status_label['text']:
+		if self.kdata != self.kero_status_label['text']:
 			self.switch_label('kero')
 
-		if ldata != self.lox_status_label['text']:
-			self.switch_label('kero')
+		if self.ldata != self.lox_status_label['text']:
+			self.switch_label('lox')
 
 		self.master.after(200,self.get_info)
 
