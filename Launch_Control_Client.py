@@ -106,15 +106,15 @@ class GUI:
 		ignitor_label.grid(row = 5, column = 0, sticky = 'E')
 
 		#status displyed
-		self.b_wire_status_label = Tk.Label(valve_frame,text = 'Intact', font = FONT,bg = 'green')
+		self.b_wire_status_label = Tk.Label(valve_frame,text = 'Intact', font = FONT,bg = 'red')
 		self.b_wire_status_label.grid(row = 1, column = 1, sticky = 'W' + 'E')
-		self.main_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
+		self.main_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'red')
 		self.main_status_label.grid(row = 2, column = 1, sticky = 'W' + 'E')
-		self.kero_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
+		self.kero_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'red')
 		self.kero_status_label.grid(row = 4, column = 1, sticky = 'W' + 'E')
-		self.lox_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'green')
+		self.lox_status_label = Tk.Label(valve_frame,text = 'Open', font = FONT,bg = 'red')
 		self.lox_status_label.grid(row = 3, column = 1, sticky = 'W' + 'E')
-		self.ignitor_status_label = Tk.Label(valve_frame,text = 'Not Lit', font = FONT,bg = 'green')
+		self.ignitor_status_label = Tk.Label(valve_frame,text = 'Not Lit', font = FONT,bg = 'red')
 		self.ignitor_status_label.grid(row = 5, column = 1, sticky = 'W' + 'E')
 
 		self.vent_open_button = Tk.Button(valve_frame, text = "Open Vents",font = FONT,command = lambda:self.send_info('VO'))
@@ -128,6 +128,7 @@ class GUI:
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED,borderwidth = 3)#This label handles the time, and is updated more than once a second in the time_thread
 		self.time_label.pack()
 
+		#Initial values
 		self.kdata = "Open"
 		self.mdata = "Open"
 		self.ldata = "Open"
@@ -217,27 +218,27 @@ class GUI:
 		#These statements change the status of the labels 
 		if label == 'bwire':
 			if self.b_wire_status_label['text'] == 'Intact':
-				self.b_wire_status_label.config(text = 'Broken',bg = 'red')
-			elif self.b_wire_status_lbagetel['text'] == 'Broken':
-				self.b_wire_status_label.config(text = 'Intact',bg = 'green')
+				self.b_wire_status_label.config(text = 'Broken',bg = 'green')
+			elif self.b_wire_status_label['text'] == 'Broken':
+				self.b_wire_status_label.config(text = 'Intact',bg = 'red')
 
 		if label == 'main':
 			if self.main_status_label['text'] == 'Open':
-				self.main_status_label.config(text = 'Closed',bg = 'red')
+				self.main_status_label.config(text = 'Closed',bg = 'green')
 			elif self.main_status_label['text'] == 'Closed':
-				self.main_status_label.config(text = 'Open',bg = 'green')
+				self.main_status_label.config(text = 'Open',bg = 'red')
 
 		if label == 'kero':
 			if self.kero_status_label['text'] == 'Open':
-				self.kero_status_label.config(text = 'Closed',bg = 'red')
+				self.kero_status_label.config(text = 'Closed',bg = 'green')
 			elif self.kero_status_label['text'] == 'Closed':
-				self.kero_status_label.config(text = 'Open',bg = 'green')
+				self.kero_status_label.config(text = 'Open',bg = 'red')
 
 		if label == "lox":
 			if self.lox_status_label['text'] == 'Open':
-				self.lox_status_label.config(text = 'Closed',bg = 'red')
+				self.lox_status_label.config(text = 'Closed',bg = 'green')
 			elif self.lox_status_label['text'] == 'Closed':
-				self.lox_status_label.config(text = 'Open',bg = 'green')
+				self.lox_status_label.config(text = 'Open',bg = 'red')
 
 	def get_info(self):
 		
