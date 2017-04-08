@@ -43,8 +43,9 @@ s.listen(1)
 #the location can be specified by setting the "filename" equal to "anyname.log"
 #if the logging filname is kept the same, the logging events will be put in the same file, adding to past events.
 
-logger = logging.getLogger("Feedback")
-logging.basicConfig(filename="SC_Server_Log.log",level=logging.DEBUG)      #    <--- set filename*
+logname=time.strftime("LC_ServerLog(%H_%M_%S.log)",time.localtime())
+logger = logging.getLogger("Feedback")                                                                 
+logging.basicConfig(filename=logname, level=logging.DEBUG)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Pin Setup
@@ -134,10 +135,12 @@ def Breakwire_read():
 		print "sending b_wire status"
 		conn.send(str(bwire))
 		print "sent b_wire status"
+		logger.debug("sent b_wire status of {} at {}".format(str(bwire), time.asctime()))
 	elif GPIO.input(b_wire) == False:
 		bwire = 'Broken'
 		conn.send(str(bwire))
 		print "Sent b_wire status of {}".format(bwire)
+		logger.debug("Sent b_wire status of {} at {}".format(str(bwire), time.asctime()))
 	return
 
 def Main_Valve_Sensor():
@@ -148,13 +151,17 @@ def Main_Valve_Sensor():
 	if GPIO.input(r_main) == True:
 		main_status = 'Open'
 		print "main is open: sending status"
+		logger.debug("main is open: sending main_status at {}".format(time.asctime()))
 		conn.send(str(main_status))
 		print "Sent status of {}".format(main_status)
+		logger.debug("Sent main_status(open) of {} at {}".format(str(main_status), time.asctime()))
 	elif GPIO.input(r_main) == False:
 		main_status = 'Closed'
 		print "main is closed: sending status"
+		logger.debug("main is closed: sending main_status at {}".format(time.asctime()))
 		conn.send(str(main_status))
 		print "Sent status of {}".format(main_status)
+		logger.debug("Sent main_status(closed) of {} at {}".format(str(main_status), time.asctime()))
 	return
 
 def LOX_Valve_Sensor():
@@ -164,9 +171,11 @@ def LOX_Valve_Sensor():
 	if GPIO.input(r_LOX) == True:
 		LOX_status = 'Open'
 		conn.send(str(LOX_status))
+		logger.debug("Sent LOX_status(open) of {} at {}".format(str(LOX_status), time.asctime()))
 	elif GPIO.input(r_LOX) == False:
 		LOX_status = 'Closed'
 		conn.send(str(LOX_status))
+		logger.debug("Sent LOX_status(closed) of {} at {}".format(str(LOX_status), time.asctime()))
 	return
 
 def Kero_Valve_Sensor():
@@ -176,9 +185,11 @@ def Kero_Valve_Sensor():
 	if GPIO.input(r_kero) == True:
 		kero_status = 'Open'
 		conn.send(str(kero_status))
+		logger.debug("Sent: kero_status(open) of {} at {}".format(str(kero_status), time.asctime()))
 	elif GPIO.input(r_kero) == False:
 		kero_status = 'Closed'
 		conn.send(str(kero_status))
+		logger.debug("Sent kero_status(closed) of {} at {}".format(str(kero_status), time.asctime()))
 	return
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -218,7 +229,7 @@ def ignitor_one_on():
 
 	GPIO.output(ign1,True)
 	GPIO.output(ign2,True)
-	conn.send("Ignitor 1 Lit") 
+	conn.send("Ignitor 1 Lit")
 	return
 
 def ignitor_one_off():
@@ -298,6 +309,7 @@ while True:
 
 	print ("Connection established.")
 	print 'Connection address: ',addr
+	logger.debug("Connection established at {}".format(time.asctime())) #find what the ip is
 	print ("Awaiting commands... \n")
 
 	data = conn.recv(BUF)
@@ -311,67 +323,67 @@ while True:
 		if 'toggle_record' in data:
 			print "Received data: ",data
 			rec_trd = threading.Thread(target=record())
-			logger.debug("toggle_record(True) at {}".format(time.asctime()))
+			logger.debug("toggle_record(rec_trd.start()) at {}".format(time.asctime()))
 			rec_trd.start()
 		
 		elif 'rocket_power' in data:
 			print "Received data: ", data
-			logger.debug("rocket_power(True) at {}".format(time.asctime()))
+			logger.debug("rocket_power(PoE_Switch_On()) at {}".format(time.asctime()))
 			PoE_Switch_On()
 
 		elif 'esb_power' in data:
 			print "Received data: ", data
-			logger.debug("esb_power(True) at {}".format(time.asctime()))
+			logger.debug("esb_power(Poe_Switch_Off()) at {}".format(time.asctime()))
 			PoE_Switch_Off()
 		
 		elif 'ign1_on' in data:
 			print "Received data: ", data
-			logger.debug("ign1_on(True) at {}".format(time.asctime()))
+			logger.debug("ign1_on(ignitor_one_on()) at {}".format(time.asctime()))
 			ignitor_one_on()
 		
 		elif 'ign1_off' in data:
 			print "Received data: ", data
-			logger.debug("ign1_off(True) at {}".format(time.asctime()))
+			logger.debug("ign1_off(ignitor_one_off()) at {}".format(time.asctime()))
 			ignitor_one_off()
 
 		elif 'ign2_on' in data:
 			print "Received data: ", data
-			logger.debug("ign2_on(True) at {}".format(time.asctime()))
+			logger.debug("ign2_on(ignitor_two_on()) at {}".format(time.asctime()))
 			ignitor_two_on()
 		
 		elif 'ign2_off' in data:
 			print "Received data: ", data
-			logger.debug("ign2_off(True) at {}".format(time.asctime()))
+			logger.debug("ign2_off(ignitor_two_off()) at {}".format(time.asctime()))
 			ignitor_two_off()
 		
 		elif 'vents_open' in data:
 			print "Received data: ", data
-			logger.debug("vents_open(True) at {}".format(time.asctime()))
+			logger.debug("vents_open(vent_open()) at {}".format(time.asctime()))
 			vent_open()
 
 		elif 'vents_close' in data:
 			print "Received data: ", data
-			logger.debug("vents_close(True) at {}".format(time.asctime()))
+			logger.debug("vents_close(vent_close()) at {}".format(time.asctime()))
 			vent_close()
 		
 		elif 'main_open' in data:
 			print "Received data: ", data
-			logger.debug("main_open(True) at {}".format(time.asctime()))
+			logger.debug("main_open(main_open()) at {}".format(time.asctime()))
 			main_open()
 
 		elif 'main_close' in data:
 			print "Received data: ", data
-			logger.debug("main_close(True) at {}".format(time.asctime()))
+			logger.debug("main_close(main_close()) at {}".format(time.asctime()))
 			main_close()
 
 		elif 'launch' in data:
 			print "Received data: ", data
-			logger.debug("launch(True) at {}".format(time.asctime()))
+			logger.debug("launch(launch()) at {}".format(time.asctime()))
 			launch()
 
 		elif 'abort' in data:
 			print "Received data: ", data
-			logger.debug("abort(True) at {}".format(time.asctime()))
+			logger.debug("abort(abort()) at {}".format(time.asctime()))
 			abort()
 			
 		elif 'temp_status' in data:
@@ -384,7 +396,7 @@ while True:
 			bwire_trd.start()
 			logger.debug("bwire_status({}) at {}".format(str(bwire),time.asctime()))
 			print "B_Wire_Thread Started"
-		print "Started R_Main_Thread"	
+			print "Started R_Main_Thread"	
 		elif 'main_status' in data:
 			r_main_trd = threading.Thread(target=Main_Valve_Sensor())
 			r_main_trd.start()
