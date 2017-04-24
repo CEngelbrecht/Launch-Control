@@ -38,36 +38,88 @@ class Window(QtWidgets.QMainWindow):
 
 		#initializes the GUI with the pictures found in the pictures folder.
 
-		backpix = QtWidgets.QLabel(self)
-		backpix.setPixmap(QtGui.QPixmap('pictures/black.png'))
-		backpix.move(0,575)
-		backpix.resize(1000,125)
+		palettered = QtGui.QPalette()
+		palettered.setColor(QtGui.QPalette.Foreground,QtCore.Qt.red)
 
-		backpix2 = QtWidgets.QLabel(self)
-		backpix2.setPixmap(QtGui.QPixmap('pictures/white.png'))
-		backpix2.move(0,0)
-		backpix2.resize(1000,80)
+		paletteblack = QtGui.QPalette()
+		paletteblack.setColor(QtGui.QPalette.Foreground,QtCore.Qt.black)
 
-		backpix3 = QtWidgets.QLabel(self)
-		backpix3.setPixmap(QtGui.QPixmap('pictures/red.png'))
-		backpix3.move(0,65)
-		backpix3.resize(1000,20)
+		paletteblue = QtGui.QPalette()
+		paletteblue.setColor(QtGui.QPalette.Foreground,QtCore.Qt.blue)
 
-		pix1 = QtWidgets.QLabel(self)
-		pix1.setPixmap(QtGui.QPixmap('pictures/sdsu.png'))
-		pix1.move(0,-170)
-		pix1.resize(1000,1000)
+		#initial values
+		self.kdata = "Open"
+		self.mdata = "Open"
+		self.ldata = "Open"
+		self.bdata = "Intact"
 
-		pix2 = QtWidgets.QLabel(self)
-		pix2.setPixmap(QtGui.QPixmap('pictures/rocketproject.png'))
-		pix2.move(712,100)
-		pix2.resize(150,150)
+		#time_thread = threading.Thread(target = self.get_time)
+		#time_thread.start()
 
-		rocketlabel = QtWidgets.QLabel(self)
-		rocketlabel.setText('SDSU ROCKET PROJECT')
-		rocketlabel.move(588, 200)
-		rocketlabel.resize(500,50)
-		rocketlabel.setFont(QtGui.QFont('Times',20,QtGui.QFont.Bold,True))
+		#self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+		self.server_address = (server_IP,port)
+		self.connection_status = False #initialzing to a false connection state
+		self.arm_status = False
+
+		def createLabel(self, stext, smovex, smovey, sresizex, sresizey, sfontsize, storf,scolor):
+
+			#makes code smaller, all the labels in the program
+
+			slabel = QtWidgets.QLabel(self)
+			slabel.setText(stext)
+			slabel.move(smovex, smovey)
+			slabel.resize(sresizex, sresizey)
+			slabel.setFont(QtGui.QFont('Times',sfontsize,QtGui.QFont.Bold,storf))
+			slabel.setPalette(scolor)
+
+		def createPicture(self, spicture, smovex, smovey, sresizex, sresizey):
+
+			#makes code smaller, all the pictures in the program
+			#you have to save pictures to the pictures/ path in order to show
+
+			pix = QtWidgets.QLabel(self)
+			pix.setPixmap(QtGui.QPixmap('pictures/'+spicture))
+			pix.move(smovex,smovey)
+			pix.resize(sresizex,sresizey)
+
+		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+								#Pictures
+
+		sdsulogo = createPicture(self, 'sdsu.png', 0, -170, 1000, 1000)
+		whitetoolbar = createPicture(self, 'white.png', 0, 0, 1000, 80)
+		redstripetoolbar = createPicture(self, 'red.png', 0, 65, 1000, 20)
+		blackbottom = createPicture(self, 'black.png', 0, 575, 1000, 125)
+		redlogounderline = createPicture(self, 'red2.png', 560, 625, 350, 5)
+		buttonborder = createPicture(self, 'border.png', 606, 190, 165, 370)
+		statsborder = createPicture(self, 'border.png', 810, 190, 165, 370)
+		statusboxbreak = createPicture(self, 'statusborder.png', 832, 274, 120, 28)
+		statusboxmain = createPicture(self, 'statusborder.png', 832, 326, 120, 28)
+		statusboxlox = createPicture(self, 'statusborder.png', 832, 376, 120, 28)
+		statusboxkero = createPicture(self, 'statusborder.png', 832, 426, 120, 28)
+		statusboxignitor = createPicture(self, 'statusborder.png', 832, 474, 120, 28)
+		statusboxsaftey = createPicture(self, 'statusborder.png', 832, 521, 120, 28)
+		rocketlogo = createPicture(self, 'rocket2.png', 825, 580, 150, 150)
+
+		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+								#Labels
+
+		rocketlabel = createLabel(self, 'SDSU ROCKET PROJECT', 570, 580, 500, 50, 20, True, palettered)
+		buttonlabel = createLabel(self, 'Commands:', 645, 160, 500, 50, 9, True, paletteblack)
+		statuslabel = createLabel(self, 'Readings', 854, 160, 500, 50, 9, True, paletteblack)
+		connectionlabel = createLabel(self, 'Connection:', 787, 27, 500, 50, 9, False, paletteblue)
+		connectionstatus = createLabel(self, 'Not Connected', 880, 27, 500, 50, 9, False, paletteblue)
+		breakwirelabel = createLabel(self, 'Breakwire Status', 827, 240, 500, 50, 9, False, paletteblue)
+		breakwirechange = createLabel(self, 'Intact', 857, 263, 500, 50, 14, False, palettered)
+		mainValvelabel = createLabel(self, 'Main Valve', 850, 290, 500, 50, 9, False, paletteblue)
+		mainValvechange = createLabel(self, 'Open', 860, 313, 500, 50, 14, False, palettered)
+		loxValvelabel = createLabel(self, 'Lox Valve', 854, 340, 500, 50, 9, False, paletteblue)
+		loxValvechange = createLabel(self, 'Open', 860, 363, 500, 50, 14, False, palettered)
+		keroValvelabel = createLabel(self, 'Kero Valve', 851, 390, 500, 50, 9, False, paletteblue)
+		keroValvechange = createLabel(self, 'Open', 860, 413, 500, 50, 14, False, palettered)
+		ignitorstatuslabel = createLabel(self, 'Ignitor Status', 840, 439, 500, 50, 9, False, paletteblue)
+		ignitorstatuschange = createLabel(self, 'Not Lit', 852, 463, 500, 50, 14, False, palettered)
+		safteystatus = createLabel(self, 'Saftey Status', 842, 486, 500, 50, 9, False, paletteblue)
+		safteystatuschange = createLabel(self, 'Disarmed', 837, 510, 500, 50, 14, False, palettered)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -89,12 +141,63 @@ class Window(QtWidgets.QMainWindow):
 
 		Figuring out how to color"""
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 		self.ToolBar()
 		self.MenuBar()
-		self.Buttons()
-		#self.Time()
+		self.homeButtons()
 		self.show()
+		#self.Time()
+
+
+	def homeButtons(self):
+
+		#Sets up buttons found in the program
+
+		btn1 = QtWidgets.QPushButton("Launch!", self)
+		btn1.resize(180, 60)
+		btn1.move(595,100)
+		#btn4.clicked.connect(self.close_application)
+
+		btn2 = QtWidgets.QPushButton("Ignite!", self)
+		btn2.resize(180, 60)
+		btn2.move(800,100)
+		#btn4.clicked.connect(self.close_application)
+
+		btn3 = QtWidgets.QPushButton("Abort!", self)
+		btn3.resize(150, 50)
+		btn3.move(614,200)
+		#btn4.clicked.connect(self.close_application)
+
+		btn4 = QtWidgets.QPushButton("Connect", self)
+		btn4.resize(150,50)
+		btn4.move(614,260)
+		#btn1.clicked.connect()
+
+		btn5 = QtWidgets.QPushButton("Open Vents", self)
+		btn5.resize(150,50)
+		btn5.move(614,320)
+		#btn4.clicked.connect(self.close_application)
+
+		btn6 = QtWidgets.QPushButton("Close Vents", self)
+		btn6.resize(150,50)
+		btn6.move(614,380)
+		#btn4.clicked.connect(self.close_application)
+
+		btn7 = QtWidgets.QPushButton("Close Main", self)
+		btn7.resize(150,50)
+		btn7.move(614,440)
+		#btn3.clicked.connect(self.close_application)
+
+		btn8 = QtWidgets.QPushButton("Toggle Saftey", self)
+		btn8.resize(150,50)
+		btn8.move(614,500)
+		#btn2.clicked.connect(self.close_application)
+
+		btn9 = QtWidgets.QPushButton("Read Statuses", self)
+		btn9.resize(150, 50)
+		btn9.move(818,200)
+		#btn4.clicked.connect(self.close_application)
+
+
 
 	def MenuBar(self):
 
@@ -129,28 +232,16 @@ class Window(QtWidgets.QMainWindow):
 		fileMenu.addAction(exitAction)
 		aboutMenu.addAction(helpAction)
 		aboutMenu.addAction(aboutAction)
-        
-
-	def Buttons(self):
-
-		#Sets up buttons found in the program
-
-		btn1 = QtWidgets.QPushButton("Connect", self)
-		btn1.resize(150,50)
-		btn1.move(613,500)
-		#btn1.clicked.connect()
-
-		btn2 = QtWidgets.QPushButton("Exit", self)
-		btn2.resize(150,50)
-		btn2.move(813,500)
-		btn2.clicked.connect(self.close_application)
 
 	
 	def ToolBar(self):
 
 		#Sets up the tool bar found right below the Menu. Has usefull applications.
 
-		launchAction = QtWidgets.QAction(QtGui.QIcon('pictures/rocket.png'), 'Launch Window', self)
+		homeAction = QtWidgets.QAction(QtGui.QIcon('pictures/home.png'), 'Home Window(NotWorking)', self)
+		#homeAction.triggered.connect(self.close_application)
+
+		launchAction = QtWidgets.QAction(QtGui.QIcon('pictures/rocket.png'), 'Launch Window(NotWorking)', self)
 		#launchAction.triggered.connect(self.close_application)
 
 		exitAction = QtWidgets.QAction(QtGui.QIcon('pictures/exit.png'), 'Exit', self)
@@ -159,14 +250,15 @@ class Window(QtWidgets.QMainWindow):
 		settingAction = QtWidgets.QAction(QtGui.QIcon('pictures/settings.png'), 'Settings', self)
 		#settingAction.triggered.connect(self.close_application)
 
-		connectionAction = QtWidgets.QAction(QtGui.QIcon('pictures/connection.png'), 'Connection Window', self)
+		connectionAction = QtWidgets.QAction(QtGui.QIcon('pictures/connection.png'), 'Ping Server', self)
 		#connectionAction.triggered.connect(self.close_application)
 
-		graphAction = QtWidgets.QAction(QtGui.QIcon('pictures/graph.png'), 'Graph Window', self)
+		graphAction = QtWidgets.QAction(QtGui.QIcon('pictures/graph.png'), 'Graph Window(NotWorking)', self)
 		#graphAction.triggered.connect(self.close_application)
 
 
 		self.toolBar = self.addToolBar("Launch Window")
+		self.toolBar.addAction(homeAction)
 		self.toolBar.addAction(launchAction)
 		self.toolBar.addAction(graphAction)
 		self.toolBar.addAction(connectionAction)
@@ -175,34 +267,45 @@ class Window(QtWidgets.QMainWindow):
 
 	def paintEvent(self, e):
 
-                #sets up the "paint brush" in order to use the drawLines function
-                
+		#sets up the "paint brush" in order to use the drawLines function
+	                
 		qp = QtGui.QPainter()
 		qp.begin(self)
 		self.drawLines(qp)
+		self.drawLines2(qp)
 		qp.end()
 
 	def drawLines(self, qp):
 
-                #draws the line seen under the sdsu logo
+	    #draws the red lines found in the program
+
+		pen = QtGui.QPen(QtCore.Qt.red, 2, QtCore.Qt.SolidLine)
+		qp.setPen(pen)
+		qp.drawLine(625,170,945,170)
+		qp.drawLine(790,190,790,550)
+
+	def drawLines2(self, qp): #(not being used currently)
+
+	    #draws the black lines found in the program
 
 		pen = QtGui.QPen(QtCore.Qt.black, 2, QtCore.Qt.SolidLine)
-
 		qp.setPen(pen)
-		qp.drawLine(925,250,625,250)
 
-	def color_picker(self): #needswork
+
+
+	def color_picker(self): #needswork(NotWorking)
 
 		#Not Functioning yet, used to paint GUI. (I am using pictures right now to do that)
 
 		color.QtWidgets.QColorDialog.getColor()
 		self.styleChoice.setStyleSheet("QWidget { background-color: {}".format(color.name()))
 
-	def Time(self): #needswork
+	def Time(self): #needswork(NotWorking)
 
 		#going to display time on the GUI
 
 		self.lcd.display(time.strftime("%H"+":"+"%M"))
+
 
 
 	def close_application(self):
@@ -211,6 +314,32 @@ class Window(QtWidgets.QMainWindow):
 
 		logger.debug("Application Exited at {}".format(time.asctime()))
 		sys.exit()
+
+class Tabs(QtWidgets.QMainWindow):#(NotWorking)
+
+	#Tabs, they do not work currently, putting them in a different class to keep them from activating
+
+    def __init__(self):
+
+        #initializes the Geometry and the overall window
+
+        super().__init__()
+        self.tabs = QtWidgets.QTabWidget()
+        self.tab1 = QtWidgets.QWidget() 
+        self.tab2 = QtWidgets.QWidget()
+        self.tab3 = QtWidgets.QWidget()
+        self.tab4 = QtWidgets.QWidget()
+
+        self.tabs.setGeometry(450,200,1000,700)
+        self.tabs.setWindowTitle('Launch Control GUI')
+        self.tabs.setWindowIcon(QtGui.QIcon('pictures/icon.png'))
+        self.tabs.setFixedSize(1000,700)
+
+        self.tabs.addTab(QtWidgets.QWidget(),'Tab 1')
+        self.tabs.addTab(QtWidgets.QWidget(),'Tab 2')
+        self.tabs.addTab(QtWidgets.QWidget(),'Tab 3')
+
+        self.tabs.show()
 
 def run():
 	app = QtWidgets.QApplication(sys.argv)
