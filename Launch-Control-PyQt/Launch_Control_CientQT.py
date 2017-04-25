@@ -7,6 +7,7 @@ import logging
 import threading
 import socket 
 import subprocess
+from datetime import datetime
 from PyQt5 import QtCore, QtWidgets, QtGui, Qt
 
 
@@ -27,10 +28,10 @@ class Window(QtWidgets.QMainWindow):
 		#initializes the Geometry and the overall window
 
 		super().__init__()
-		self.setGeometry(450,200,1000,700)
+		self.setGeometry(325,150,1200,800)
 		self.setWindowTitle('Launch Control GUI')
 		self.setWindowIcon(QtGui.QIcon('pictures/icon.png'))
-		self.setFixedSize(1000,700)
+		self.setFixedSize(1200,800)
 
 		self.init_ui()
 
@@ -61,7 +62,9 @@ class Window(QtWidgets.QMainWindow):
 		self.connection_status = False #initialzing to a false connection state
 		self.arm_status = False
 
-		def createLabel(self, stext, smovex, smovey, sresizex, sresizey, sfontsize, storf,scolor):
+		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		def createLabel(self, stext, smovex, smovey, sresizex, sresizey, sfontsize, storf, scolor):
 
 			#makes code smaller, all the labels in the program
 
@@ -85,41 +88,66 @@ class Window(QtWidgets.QMainWindow):
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 								#Pictures
 
-		sdsulogo = createPicture(self, 'sdsu.png', 0, -170, 1000, 1000)
-		whitetoolbar = createPicture(self, 'white.png', 0, 0, 1000, 80)
-		redstripetoolbar = createPicture(self, 'red.png', 0, 65, 1000, 20)
-		blackbottom = createPicture(self, 'black.png', 0, 575, 1000, 125)
-		redlogounderline = createPicture(self, 'red2.png', 560, 625, 350, 5)
-		buttonborder = createPicture(self, 'border.png', 606, 190, 165, 370)
-		statsborder = createPicture(self, 'border.png', 810, 190, 165, 370)
-		statusboxbreak = createPicture(self, 'statusborder.png', 832, 274, 120, 28)
-		statusboxmain = createPicture(self, 'statusborder.png', 832, 326, 120, 28)
-		statusboxlox = createPicture(self, 'statusborder.png', 832, 376, 120, 28)
-		statusboxkero = createPicture(self, 'statusborder.png', 832, 426, 120, 28)
-		statusboxignitor = createPicture(self, 'statusborder.png', 832, 474, 120, 28)
-		statusboxsaftey = createPicture(self, 'statusborder.png', 832, 521, 120, 28)
-		rocketlogo = createPicture(self, 'rocket2.png', 825, 580, 150, 150)
+		#def createPicture(self, spicture, smovex, smovey, sresizex, sresizey):
+
+		whitetoolbar = createPicture(self, 'white.png', 0, 0, 1200, 80)
+		whitebackground = createPicture(self, 'white2.png', 800, 0, 750, 700)
+		redstripetoolbar = createPicture(self, 'red.png', 0, 65, 1200, 20)
+		blackbottom = createPicture(self, 'black.png', 0, 650, 1200, 150)
+		blacklogoback = createPicture(self, 'black2.png', 745, 85, 110, 570)
+		sdsulogo = createPicture(self, 'sdsu.png', 750, 89, 100, 85)
+		redlogounderline = createPicture(self, 'red2.png', 740, 695, 350, 5)
+		whitebtnborder = createPicture(self, 'black3.png', 320, 180, 400, 10)
+		statrborder = createPicture(self, 'rborder.png', 675, 240, 50, 400)
+		statlborder = createPicture(self, 'lborder.png', 315, 240, 50, 400)
+		buttonrborder = createPicture(self, 'rborder.png', 250, 240, 50, 400)
+		buttonlborder = createPicture(self, 'lborder.png', 20, 240, 50, 400)
+		statusboxbreak = createPicture(self, 'statusborder.png', 330, 265, 380, 48)
+		statusboxmain = createPicture(self, 'statusborder.png', 330, 325, 380, 48)
+		statusboxlox = createPicture(self, 'statusborder.png', 330, 385, 380, 48)
+		statusboxkero = createPicture(self, 'statusborder.png', 330, 445, 380, 48)
+		statusboxignitor = createPicture(self, 'statusborder.png', 330, 505, 380, 48)
+		statusboxsaftey = createPicture(self, 'statusborder.png', 330, 565, 380, 48)
+		rocketlogo = createPicture(self, 'rocket2.png', 1000, 650, 150, 150)
+		redstripetoolbar = createPicture(self, 'red.png', 0, 650, 1200, 5)
+		commandbreak = createPicture(self, 'break.png', 110, 245, 100, 10)
+		statusbreak = createPicture(self, 'break.png', 470, 245, 100, 10)
 
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 								#Labels
 
-		rocketlabel = createLabel(self, 'SDSU ROCKET PROJECT', 570, 580, 500, 50, 20, True, palettered)
-		buttonlabel = createLabel(self, 'Commands:', 645, 160, 500, 50, 9, True, paletteblack)
-		statuslabel = createLabel(self, 'Readings', 854, 160, 500, 50, 9, True, paletteblack)
-		connectionlabel = createLabel(self, 'Connection:', 787, 27, 500, 50, 9, False, paletteblue)
-		connectionstatus = createLabel(self, 'Not Connected', 880, 27, 500, 50, 9, False, paletteblue)
-		breakwirelabel = createLabel(self, 'Breakwire Status', 827, 240, 500, 50, 9, False, paletteblue)
-		breakwirechange = createLabel(self, 'Intact', 857, 263, 500, 50, 14, False, palettered)
-		mainValvelabel = createLabel(self, 'Main Valve', 850, 290, 500, 50, 9, False, paletteblue)
-		mainValvechange = createLabel(self, 'Open', 860, 313, 500, 50, 14, False, palettered)
-		loxValvelabel = createLabel(self, 'Lox Valve', 854, 340, 500, 50, 9, False, paletteblue)
-		loxValvechange = createLabel(self, 'Open', 860, 363, 500, 50, 14, False, palettered)
-		keroValvelabel = createLabel(self, 'Kero Valve', 851, 390, 500, 50, 9, False, paletteblue)
-		keroValvechange = createLabel(self, 'Open', 860, 413, 500, 50, 14, False, palettered)
-		ignitorstatuslabel = createLabel(self, 'Ignitor Status', 840, 439, 500, 50, 9, False, paletteblue)
-		ignitorstatuschange = createLabel(self, 'Not Lit', 852, 463, 500, 50, 14, False, palettered)
-		safteystatus = createLabel(self, 'Saftey Status', 842, 486, 500, 50, 9, False, paletteblue)
-		safteystatuschange = createLabel(self, 'Disarmed', 837, 510, 500, 50, 14, False, palettered)
+		#def createLabel(self, stext, smovex, smovey, sresizex, sresizey, sfontsize, storf, scolor):
+
+		rocketlabel = createLabel(self, 'SDSU ROCKET PROJECT', 750, 650, 500, 50, 20, True, palettered)
+		buttonlabel = createLabel(self, 'Commands:', 90, 190, 800, 80, 13, True, paletteblack)
+		statuslabel = createLabel(self, 'Readings:', 465, 190, 800, 80, 13, True, paletteblack)
+		connectionlabel = createLabel(self, 'Connection:', 985, 23, 500, 50, 9, False, paletteblue)
+		connectionstatus = createLabel(self, 'Not Connected', 1080, 23, 500, 50, 9, False, paletteblue)
+		breakwirelabel = createLabel(self, 'Breakwire Status', 340, 265, 500, 50, 12, False, paletteblue)
+		breakwirechange = createLabel(self, 'Intact', 600, 265, 500, 50, 18, False, palettered)
+		mainValvelabel = createLabel(self, 'Main Valve', 340, 325, 500, 50, 12, False, paletteblue)
+		mainValvechange = createLabel(self, 'Open', 615, 325, 500, 50, 18, False, palettered)
+		loxValvelabel = createLabel(self, 'Lox Valve', 340, 385, 500, 50, 12, False, paletteblue)
+		loxValvechange = createLabel(self, 'Open', 615, 385, 500, 50, 18, False, palettered)
+		keroValvelabel = createLabel(self, 'Kero Valve', 340, 445, 500, 50, 12, False, paletteblue)
+		keroValvechange = createLabel(self, 'Open', 615, 445, 500, 50, 18, False, palettered)
+		ignitorstatuslabel = createLabel(self, 'Ignitor Status', 340, 505, 500, 50, 12, False, paletteblue)
+		ignitorstatuschange = createLabel(self, 'Not Lit', 590, 505, 500, 50, 18, False, palettered)
+		safteystatus = createLabel(self, 'Saftey Status', 340, 565, 500, 50, 12, False, paletteblue)
+		safteystatuschange = createLabel(self, 'Disarmed', 550, 565, 500, 50, 18, False, palettered)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		#sets up the logging text box in the console
+
+		self.logTextBox = QtWidgets.QTextBrowser(self)
+		self.font = QtGui.QFont()
+		self.font.setPointSize(12)
+		self.logTextBox.setFont(self.font)
+		self.logTextBox.setReadOnly(True)
+		self.logTextBox.resize(345,565)
+		self.logTextBox.move(855,85)
+		self.logTextBox.append("========Action Log========")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -152,50 +180,64 @@ class Window(QtWidgets.QMainWindow):
 
 		#Sets up buttons found in the program
 
-		btn1 = QtWidgets.QPushButton("Launch!", self)
-		btn1.resize(180, 60)
-		btn1.move(595,100)
-		#btn4.clicked.connect(self.close_application)
+		self.font2 = QtGui.QFont()
+		self.font2.setPointSize(18)
+		self.font3 = QtGui.QFont()
+		self.font3.setPointSize(12)
 
-		btn2 = QtWidgets.QPushButton("Ignite!", self)
-		btn2.resize(180, 60)
-		btn2.move(800,100)
-		#btn4.clicked.connect(self.close_application)
+		launchBtn = QtWidgets.QPushButton("Launch!", self)
+		launchBtn.resize(290, 100)
+		launchBtn.move(15, 100)
+		launchBtn.setFont(self.font2)
+		launchBtn.clicked.connect(self.launch_app)
 
-		btn3 = QtWidgets.QPushButton("Abort!", self)
-		btn3.resize(150, 50)
-		btn3.move(614,200)
-		#btn4.clicked.connect(self.close_application)
+		igniteBtn = QtWidgets.QPushButton("Ignite!", self)
+		igniteBtn.resize(210, 70)
+		igniteBtn.move(310,100)
+		igniteBtn.setFont(self.font3)
+		igniteBtn.clicked.connect(self.ignite_app)
 
-		btn4 = QtWidgets.QPushButton("Connect", self)
-		btn4.resize(150,50)
-		btn4.move(614,260)
-		#btn1.clicked.connect()
+		abortBtn = QtWidgets.QPushButton("Abort!", self)
+		abortBtn.resize(210, 70)
+		abortBtn.move(525,100)
+		abortBtn.setFont(self.font3)
+		abortBtn.clicked.connect(self.abort_app)
 
-		btn5 = QtWidgets.QPushButton("Open Vents", self)
-		btn5.resize(150,50)
-		btn5.move(614,320)
-		#btn4.clicked.connect(self.close_application)
+		connectBtn = QtWidgets.QPushButton("Connect", self)
+		connectBtn.resize(240,60)
+		connectBtn.move(40,260)
+		connectBtn.setFont(self.font3)
+		connectBtn.clicked.connect(self.connect_app)
 
-		btn6 = QtWidgets.QPushButton("Close Vents", self)
-		btn6.resize(150,50)
-		btn6.move(614,380)
-		#btn4.clicked.connect(self.close_application)
+		open_ventsBtn = QtWidgets.QPushButton("Open Vents", self)
+		open_ventsBtn.resize(240,60)
+		open_ventsBtn.move(40,320)
+		open_ventsBtn.setFont(self.font3)
+		open_ventsBtn.clicked.connect(self.openvents_app)
 
-		btn7 = QtWidgets.QPushButton("Close Main", self)
-		btn7.resize(150,50)
-		btn7.move(614,440)
-		#btn3.clicked.connect(self.close_application)
+		close_ventsBtn = QtWidgets.QPushButton("Close Vents", self)
+		close_ventsBtn.resize(240,60)
+		close_ventsBtn.move(40,380)
+		close_ventsBtn.setFont(self.font3)
+		close_ventsBtn.clicked.connect(self.closevents_app)
 
-		btn8 = QtWidgets.QPushButton("Toggle Saftey", self)
-		btn8.resize(150,50)
-		btn8.move(614,500)
-		#btn2.clicked.connect(self.close_application)
+		close_mainBtn = QtWidgets.QPushButton("Close Main", self)
+		close_mainBtn.resize(240,60)
+		close_mainBtn.move(40,440)
+		close_mainBtn.setFont(self.font3)
+		close_mainBtn.clicked.connect(self.closemain_app)
 
-		btn9 = QtWidgets.QPushButton("Read Statuses", self)
-		btn9.resize(150, 50)
-		btn9.move(818,200)
-		#btn4.clicked.connect(self.close_application)
+		safteyBtn = QtWidgets.QPushButton("Toggle Saftey", self)
+		safteyBtn.resize(240,60)
+		safteyBtn.move(40,500)
+		safteyBtn.setFont(self.font3)
+		safteyBtn.clicked.connect(self.saftey_app)
+
+		statusBtn = QtWidgets.QPushButton("Read Statuses", self)
+		statusBtn.resize(240, 60)
+		statusBtn.move(40,560)
+		statusBtn.setFont(self.font3)
+		statusBtn.clicked.connect(self.status_app)
 
 
 
@@ -211,7 +253,7 @@ class Window(QtWidgets.QMainWindow):
 		exitAction = QtWidgets.QAction(QtGui.QIcon('pictures/exit.png'), '&Exit', self)        
 		exitAction.setShortcut('Ctrl+Q')
 		exitAction.setStatusTip('Exit Application')
-		exitAction.triggered.connect(self.close_application)
+		exitAction.triggered.connect(self.close_app)
 
 		helpAction = QtWidgets.QAction(QtGui.QIcon('pictures/help.png'), '&Help', self)
 		helpAction.setShortcut('Ctrl+H')
@@ -245,7 +287,7 @@ class Window(QtWidgets.QMainWindow):
 		#launchAction.triggered.connect(self.close_application)
 
 		exitAction = QtWidgets.QAction(QtGui.QIcon('pictures/exit.png'), 'Exit', self)
-		exitAction.triggered.connect(self.close_application)
+		exitAction.triggered.connect(self.close_app)
 
 		settingAction = QtWidgets.QAction(QtGui.QIcon('pictures/settings.png'), 'Settings', self)
 		#settingAction.triggered.connect(self.close_application)
@@ -281,8 +323,11 @@ class Window(QtWidgets.QMainWindow):
 
 		pen = QtGui.QPen(QtCore.Qt.red, 2, QtCore.Qt.SolidLine)
 		qp.setPen(pen)
-		qp.drawLine(625,170,945,170)
-		qp.drawLine(790,190,790,550)
+		qp.drawLine(20,210,725,210)
+		qp.drawLine(307.5,220,307.5,640)
+		#qp.drawLine(330,400,710,400)
+		#qp.drawLine(20,205,325,205)
+		#qp.drawLine(240,265,240,305)
 
 	def drawLines2(self, qp): #(not being used currently)
 
@@ -306,14 +351,70 @@ class Window(QtWidgets.QMainWindow):
 
 		self.lcd.display(time.strftime("%H"+":"+"%M"))
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# This is where the functions are for the buttons and toolbar
 
+	def launch_app(self):
 
-	def close_application(self):
+		self.logTextBox.append("> Launching!{}".format(time.strftime("\t-         (%H:%M:%S)",time.localtime())))
+		logger.debug("Launching at {}".format(time.asctime()))
 
+	def ignite_app(self):
+
+		self.logTextBox.append("> Igniting!{}".format(time.strftime("\t-         (%H:%M:%S)",time.localtime())))
+		logger.debug("Igniting at {}".format(time.strftime("(%H:%M:%S)",time.localtime())))
+
+	def abort_app(self):
+
+		self.logTextBox.append("> Aborting!{}".format(time.strftime("\t-         (%H:%M:%S)",time.localtime())))
+		logger.debug("Aborting at {}".format(time.strftime("(%H:%M:%S)",time.localtime())))
+
+	def connect_app(self):
+
+		self.logTextBox.append("> Connecting...{}".format(time.strftime("\t-         (%H:%M:%S)",time.localtime())))
+		logger.debug("Connecting... at {}".format(time.strftime("(%H:%M:%S)",time.localtime())))
+
+	def openvents_app(self):
+
+		self.logTextBox.append("> Vents Opened{}".format(time.strftime("\t-         (%H:%M:%S)",time.localtime())))
+		logger.debug("Vents Opened at {}".format(time.strftime("(%H:%M:%S)",time.localtime())))
+
+	def closevents_app(self):
+
+		self.logTextBox.append("> Vents Closed{}".format(time.strftime("\t-         (%H:%M:%S)",time.localtime())))
+		logger.debug("Vents Closed at {}".format(time.strftime("(%H:%M:%S)",time.localtime())))
+
+	def closemain_app(self):
+
+		self.logTextBox.append("> Main Closed{}".format(time.strftime("\t-         (%H:%M:%S)",time.localtime())))
+		logger.debug("Main Closed at {}".format(time.strftime("(%H:%M:%S)",time.localtime())))
+
+	def saftey_app(self):
+
+		self.logTextBox.append("> Saftey Toggled{}".format(time.strftime("\t-         (%H:%M:%S)",time.localtime())))
+		logger.debug("Saftey Toggled at {}".format(time.strftime("(%H:%M:%S)",time.localtime())))
+
+	def status_app(self):
+
+		self.logTextBox.append("> Reading{}".format(time.strftime("\t-         (%H:%M:%S)",time.localtime())))
+		logger.debug("Reading at {}".format(time.strftime("(%H:%M:%S)",time.localtime())))
+
+	def ping_app(self):
+
+		self.logTextBox.append("Pinging Server{}".format(time.strftime("\t-         (%H:%M:%S)",time.localtime())))
+		logger.debug("Pinging Server at {}".format(time.strftime("(%H:%M:%S)",time.localtime())))
+
+	def close_app(self):
 		#exits GUI
+		self.logTextBox.append("> Exiting...{}".format(time.strftime("\t-         (%H:%M:%S)",time.localtime())))
+		choice = QtWidgets.QMessageBox.question(self, "Confirmation.", "Are you sure you want to exit?", QtWidgets.QMessageBox.Yes |  QtWidgets.QMessageBox.No)
+		if choice == QtWidgets.QMessageBox.Yes:
+			print("System Closed")
+			logger.debug("Application Exited at {}".format(time.strftime("(%H:%M:%S)",time.localtime())))
+			sys.exit()
+		else:
+			self.logTextBox.append("> Exit Stopped{}".format(time.strftime("\t-         (%H:%M:%S)",time.localtime())))
 
-		logger.debug("Application Exited at {}".format(time.asctime()))
-		sys.exit()
 
 class Tabs(QtWidgets.QMainWindow):#(NotWorking)
 
