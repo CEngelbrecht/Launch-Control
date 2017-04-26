@@ -43,8 +43,8 @@ s.listen(1)
 #the location can be specified by setting the "filename" equal to "anyname.log"
 #if the logging filname is kept the same, the logging events will be put in the same file, adding to past events.
 
-logname=time.strftime("LC_ServerLog(%H_%M_%S.log)",time.localtime())
-logger = logging.getLogger("Feedback")                                                                 
+logname=time.strftime("LC_ServerLog(%H_%M_%S).log",time.localtime())
+logger = logging.getLogger("")                                                                 
 logging.basicConfig(filename=logname, level=logging.DEBUG)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

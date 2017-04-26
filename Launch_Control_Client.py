@@ -22,8 +22,8 @@ server_IP = '192.168.1.33' #This is the IP of the ESB Pi. It is a static IP.
 port = 5000
 BUFF = 1024
 
-logname=time.strftime("LC_ClientLog(%H_%M_%S.log)",time.localtime())
-logger = logging.getLogger("Feedback")                                                                 
+logname=time.strftime("log/LC_ClientLog(%H_%M_%S).log",time.localtime())
+logger = logging.getLogger("")                                                                 
 logging.basicConfig(filename=logname, level=logging.DEBUG)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,13 +86,13 @@ class GUI:
 		listen_button.pack(fill = 'both')
 
 		#launch_frame code
-		self.ignite_button = Tk.Button(launch_frame, text="Ignite!", font=FONT, bg = "indian red", command=lambda: self.send_info('Ig'),state = 'disabled')
+		self.ignite_button = Tk.Button(launch_frame, text="Ignite!", font=FONT, bg = "indian red", command=lambda: self.send_info('Ig'),state = 'disabled') #~~~~~~~~~~~~~~~~FUNCTION BUTTONS
 		self.ignite_button.pack(fill='both')
 		empty_Label_Method()
-		self.launch_button = Tk.Button(launch_frame,text = "Launch!", font = FONT, bg = "indian red", command =lambda:self.send_info('L'),state = 'disabled')
+		self.launch_button = Tk.Button(launch_frame,text = "Launch!", font = FONT, bg = "indian red", command =lambda:self.send_info('L'),state = 'disabled') #~~~~~~~~~~~~~~~~FUNCTION BUTTONS
 		self.launch_button.pack(fill = 'both')
 		empty_Label_Method()
-		self.abort_button = Tk.Button(launch_frame,text = "Abort!",font = FONT, bg = "indian red", command = lambda:self.send_info('A'),state = 'disabled')
+		self.abort_button = Tk.Button(launch_frame,text = "Abort!",font = FONT, bg = "indian red", command = lambda:self.send_info('A'),state = 'disabled') #~~~~~~~~~~~~~~~~FUNCTION BUTTONS
 		self.abort_button.pack(fill = 'both')
 
 		#valve frame
@@ -119,11 +119,11 @@ class GUI:
 		self.ignitor_status_label = Tk.Label(valve_frame,text = 'Not Lit', font = FONT,bg = 'red')
 		self.ignitor_status_label.grid(row = 5, column = 1, sticky = 'W' + 'E')
 
-		self.vent_open_button = Tk.Button(valve_frame, text = "Open Vents",font = FONT,command = lambda:self.send_info('VO'))
+		self.vent_open_button = Tk.Button(valve_frame, text = "Open Vents",font = FONT,command = lambda:self.send_info('VO')) #~~~~~~~~~~~~~~~~FUNCTION BUTTONS
 		self.vent_open_button.grid(row = 6 , column = 0, stick = 'W' + 'E')
-		self.vent_close_button = Tk.Button(valve_frame, text = "Close Vents",font = FONT,command = lambda:self.send_info('VC'))
+		self.vent_close_button = Tk.Button(valve_frame, text = "Close Vents",font = FONT,command = lambda:self.send_info('VC')) #~~~~~~~~~~~~~~~~FUNCTION BUTTONS
 		self.vent_close_button.grid(row = 6 , column = 1, stick = 'W' + 'E')
-		self.main_close_button = Tk.Button(valve_frame, text = "Close Main", font = FONT,command = lambda:self.send_info('MC'))
+		self.main_close_button = Tk.Button(valve_frame, text = "Close Main", font = FONT,command = lambda:self.send_info('MC')) #~~~~~~~~~~~~~~~~FUNCTION BUTTONS
 		self.main_close_button.grid(row = 7, column = 1, stick = 'W' + 'E')
 
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED, bg="red",bd = 5)#This label handles the time, and is updated more than once a second in the time_thread
@@ -288,15 +288,19 @@ class GUI:
 		#The following if statements call the label to be changed only if the server sends a message that contradicts the current status of the label 
 		if self.bdata != self.b_wire_status_label['text']:
 			self.switch_label("bwire")
+			logger.debug("bwire_status of {} at {}".format(str(self.bdata),time.asctime()))
 
 		if self.mdata != self.main_status_label['text']:
 			self.switch_label('main')
+			logger.debug("main_status of {} at {}".format(str(self.mdata),time.asctime()))
 
 		if self.kdata != self.kero_status_label['text']:
 			self.switch_label('kero')
+			logger.debug("kero_status of {} at {}".format(str(self.kdata),time.asctime()))
 
 		if self.ldata != self.lox_status_label['text']:
 			self.switch_label('lox')
+			logger.debug("lox_status of {} at {}".format(str(self.ldata),time.asctime()))
 
 		self.master.after(200,self.get_info)
 
