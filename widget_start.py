@@ -12,7 +12,7 @@ logging.basicConfig(filename=logname, level=logging.DEBUG)
 
 
 
-class  StartWidget(QWidget):
+class  Start(QWidget):
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
         # initializes the GUI with the pictures found in the pictures folder.

@@ -1,7 +1,7 @@
 import sys
 import time
 import logging
-from PyQt5.QtWidgets import QMainWindow, QApplication, QAction
+from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, QWidget, QLabel, QLineEdit, QVBoxLayout
 from PyQt5.QtGui import QIcon
 from tabs import TabManager
 
@@ -26,7 +26,9 @@ class Client(QMainWindow):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.setWindowIcon(QIcon('pictures/icon.png'))
-        self.setFixedSize(1030, 800)
+        #self.setFixedSize(1030, 800)
+
+        self.client_settings = ClientSettings()
 
         self.table_widget = TabManager(self)
         self.setCentralWidget(self.table_widget)
@@ -45,7 +47,7 @@ class Client(QMainWindow):
         exitAction.triggered.connect(self.close_application)
 
         settingAction = QAction(QIcon('pictures/settings.png'), 'Settings', self)
-        # settingAction.triggered.connect(self.close_application)
+        settingAction.triggered.connect(self.client_settings.show)
 
         connectionAction = QAction(QIcon('pictures/connection.png'), 'Connection Window', self)
         # connectionAction.triggered.connect(self.close_application)
@@ -67,7 +69,7 @@ class Client(QMainWindow):
         settingAction = QAction(QIcon('pictures/settings.png'), '&Settings', self)
         settingAction.setShortcut('Ctrl+S')
         settingAction.setStatusTip("Doesn't Work Right Now")
-        # settingAction.triggered.connect(QtWidgets.)
+        settingAction.triggered.connect(self.client_settings.call_window)
 
         exitAction = QAction(QIcon('pictures/exit.png'), '&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
@@ -99,6 +101,39 @@ class Client(QMainWindow):
 
         logger.debug("Application Exited at {}".format(time.asctime()))
         sys.exit()
+
+
+class ClientSettings(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.title = 'Client Settings'
+        self.left = 50
+        self.top = 50
+        self.width = 500
+        self.height = 500
+
+        self.setWindowTitle(self.title)
+        self.setWindowIcon(QIcon('pictures/settings.png'))
+        self.setFixedSize(500, 500)
+
+        self.log_folder_label = QLabel('Log Folder:', self)
+        self.log_folder_label.move(10,10)
+        self.log_folder_field = QLineEdit(self)
+        self.log_folder_field.move(10,30)
+
+        self.settings_init()
+
+    def call_window(self):
+        #This functioned is called everytime the window is opened so that
+        #settings init is called to reload whatever settings are saved in config
+        self.settings_init()
+        self.show()
+
+    def settings_init(self):
+        #Unfinished
+        #Would load current setting from config
+        self.log_folder_field.setText('log')
 
 
 if __name__ == '__main__':

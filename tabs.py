@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QTabWidget, QVBoxLayout
 from PyQt5.QtCore import pyqtSlot
-from widget_start import StartWidget
+from widget_start import Start
 from widget_launch_control import LaunchControl
-from widget_coms import Communication
+from widget_coms import RadioTab
 
 
 class TabManager(QWidget):
@@ -15,20 +15,16 @@ class TabManager(QWidget):
 
         #Init Tabs
         self.launch_control = LaunchControl()
-        self.communication = Communication()
-        self.start_page = StartWidget(self)
+        self.radio = RadioTab()
+        self.start_page = Start(self)
         #self.tab_name = customWidget()
 
         #Connect Tabs
         self.tabs.addTab(self.start_page, "Start")
         self.tabs.addTab(self.launch_control, "Launch Control")
-        self.tabs.addTab(self.communication, "Communication")
+        self.tabs.addTab(self.radio, "Radio")
 
         #Add tabs to widget
-        self.communication.layout = QVBoxLayout(self)
-        self.pushButton1 = QPushButton("PyQt5 button")
-        self.communication.layout.addWidget(self.pushButton1)
-        self.communication.setLayout(self.communication.layout)
 
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
