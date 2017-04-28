@@ -20,7 +20,7 @@ class TabManager(QWidget):
         #self.tab_name = customWidget()
 
         #Connect Tabs
-        self.tabs.addTab(self.start_page, "Start")
+        #self.tabs.addTab(self.start_page, "Start")
         self.tabs.addTab(self.launch_control, "Launch Control")
         self.tabs.addTab(self.radio, "Radio")
 

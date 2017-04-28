@@ -1,7 +1,7 @@
 import sys
 import time
 import logging
-from PyQt5.QtWidgets import QWidget, QPushButton, QTabWidget, QVBoxLayout, QLabel, QAction, QMenuBar, QMessageBox
+from PyQt5.QtWidgets import QWidget, QPushButton, QTabWidget, QVBoxLayout, QLabel, QAction, QMenuBar, QMessageBox, QGridLayout, QStackedWidget
 from PyQt5.QtGui import QPixmap, QIcon, QPainter, QPen, QFont, QPalette
 from PyQt5.QtCore import Qt
 from widget_launch_control import LaunchControl
@@ -27,6 +27,11 @@ class  Start(QWidget):
         paletteblue = QPalette()
         paletteblue.setColor(QPalette.Foreground, Qt.blue)
 
+        grid = QGridLayout()
+        grid.setSpacing(10)
+
+        #grid.addWidget(self.statusbreakred, 40, 0, 40, 40)
+
         def createLabel(self, stext, smovex, smovey, sresizex, sresizey, sfontsize, storf, scolor):
             # makes code smaller, all the labels in the program
 
@@ -36,6 +41,7 @@ class  Start(QWidget):
             slabel.resize(sresizex, sresizey)
             slabel.setFont(QFont('Times', sfontsize, QFont.Bold, storf))
             slabel.setPalette(scolor)
+
 
         def createPicture(self, spicture, smovex, smovey, sresizex, sresizey):
             # makes code smaller, all the pictures in the program
@@ -57,6 +63,7 @@ class  Start(QWidget):
         rocketlabel = createLabel(self, 'SDSU ROCKET PROJECT', 780, 650, 500, 50, 20, True, palettered)
         mainlabel = createLabel(self, 'HOME', 10, 20, 500, 50, 24, True, paletteblack)
 
+        self.setLayout(grid)
         self.Buttons()
         self.show()
 
@@ -65,20 +72,23 @@ class  Start(QWidget):
     def Buttons(self):
         # Sets up buttons found in the program
 
+        #self.btnBackward.clicked.connect(self.stack.backward)
+        #self.btnForward.clicked.connect(self.stack.forward)
+
         self.font2 = QFont()
         self.font2.setPointSize(18)
         self.font3 = QFont()
         self.font3.setPointSize(12)
 
-        connectBtn = QPushButton("Connect", self)
-        connectBtn.resize(250, 100)
-        connectBtn.move(613, 500)
-        #connectBtn.clicked.connect()
+        self.connectBtn = QPushButton("Connect", self)
+        self.connectBtn.resize(250, 100)
+        self.connectBtn.move(613, 500)
+        #self.connectBtn.clicked.connect(self.connect)
 
-        exitBtn = QPushButton("Exit", self)
-        exitBtn.resize(250, 100)
-        exitBtn.move(913, 500)
-        exitBtn.clicked.connect(self.close_app)
+        self.exitBtn = QPushButton("Exit", self)
+        self.exitBtn.resize(250, 100)
+        self.exitBtn.move(913, 500)
+        self.exitBtn.clicked.connect(self.close_app)
 
     def paintEvent(self, e):
         # sets up the "paint brush" in order to use the drawLines function
@@ -108,6 +118,12 @@ class  Start(QWidget):
         # going to display time on the GUI
 
         self.lcd.display(time.strftime("%H" + ":" + "%M"))
+
+    def connect(self): #switching tab based on a button. still needs work
+        self.setCurrentIndex(self.currentIndex() + 1)
+
+    def backward(self):
+        self.setCurrentIndex(self.currentIndex() - 1)
 
     def close_app(self):
         # exits GUI

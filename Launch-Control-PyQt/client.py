@@ -1,12 +1,12 @@
 import sys
 import time
 import logging
-from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, QWidget, QLabel, QLineEdit, QVBoxLayout, QMessageBox, QPushButton
+from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, QWidget, QLabel, QLineEdit, QVBoxLayout, QMessageBox, QPushButton, QStackedWidget
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIcon,QPixmap,QFont
 from tabs import TabManager
 
-server_IP = '192.168.1.33'  # This is the IP of the ESB Pi. It is a static IP.
+server_IP = '192.168.1.132'  # This is the IP of the ESB Pi. It is a static IP.
 port = 5000
 BUFF = 1024
 
@@ -31,56 +31,13 @@ class Client(QMainWindow):
         self.table_widget = TabManager(self)
         self.setCentralWidget(self.table_widget)
 
-        self.init_UI()
         self.MenuBar()
-        self.ToolBar()
+        #self.ToolBar()
         self.show()
 
-    def init_UI(self):
-
-        self.timert = QLabel(self)
-        self.timert.setText("Countdown:")
-        self.timert.move(670, 83)
-        self.timert.resize(200, 50)
-        self.timert.setFont(QFont('Times', 8, QFont.Bold, True))
-
-        self.timeup = 10
-        self.timert = QLabel(self)
-        self.timert.setText("10")
-        self.timert.move(820, 92)
-        self.timert.resize(100, 50)
-        self.timert.setFont(QFont('Times', 20, QFont.Bold, False))
-
-
-        def createLabel(self, stext, smovex, smovey, sresizex, sresizey, sfontsize, storf, scolor):
-            # makes code smaller, all the labels in the program
-
-            slabel = QLabel(self)
-            slabel.setText(stext)
-            slabel.move(smovex, smovey)
-            slabel.resize(sresizex, sresizey)
-            slabel.setFont(QFont('Times', sfontsize, QFont.Bold, storf))
-            slabel.setPalette(scolor)
-
-        def createPicture(self, spicture, smovex, smovey, sresizex, sresizey):
-            # makes code smaller, all the pictures in the program
-            # you have to save pictures to the pictures/ path in order to show
-
-            pix = QLabel(self)
-            pix.setPixmap(QPixmap('pictures/' + spicture))
-            pix.move(smovex, smovey)
-            pix.resize(sresizex, sresizey)
-
-        whitetoolbar = createPicture(self, 'white3.png', 0, 0, 1300, 80)
-        timerbackground = createPicture(self, 'timerback.png', 635, 100, 300, 39)
-
-        timeBtn = QPushButton("Start", self)
-        timeBtn.move(668, 115)
-        timeBtn.resize(125, 20)
-        timeBtn.clicked.connect(self.timer1)
-
-    def ToolBar(self):
+    '''def ToolBar(self):
         # Sets up the tool bar found right below the Menu. Has usefull applications.
+        # Not being used
 
         homeAction = QAction(QIcon('pictures/home.png'), 'Home', self)
         #homeAction.triggered.connect(self.close_application)
@@ -107,17 +64,7 @@ class Client(QMainWindow):
         self.toolBar.addAction(graphAction)
         self.toolBar.addAction(connectionAction)
         self.toolBar.addAction(settingAction)
-        self.toolBar.addAction(exitAction)
-
-    def timer0(self):
-        if self.timeup > 0:
-            self.timeup -= 1
-            self.timert.setText(str(self.timeup))
-
-    def timer1(self):
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.timer0)
-        self.timer.start(1000)
+        self.toolBar.addAction(exitAction)'''
 
     def MenuBar(self):
         # Sets up File and About on top left of page. Most Functions are not completed yet.

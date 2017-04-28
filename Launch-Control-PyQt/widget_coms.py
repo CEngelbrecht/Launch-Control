@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QTextEdit, QGridLayout, QTextBrowser, QBoxLayout, QVBoxLayout, QHBoxLayout, QPushButton
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import QObject, pyqtSignal
 
 
@@ -23,10 +23,7 @@ class RadioTab(QWidget):
         self.coms_status = QTextBrowser()
         self.serial_options = SerialOptions()
 
-
         self.serial_options.connect_push.connect(self.connect_clicked_signal)
-
-
 
         grid = QGridLayout()
         grid.setSpacing(10)
@@ -39,7 +36,6 @@ class RadioTab(QWidget):
 
         grid.addWidget(coms_status_label, 21, 0)
         grid.addWidget(self.coms_status, 21, 1, 20, 50)
-
 
         self.setLayout(grid)
 

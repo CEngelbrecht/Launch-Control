@@ -7,7 +7,7 @@ import subprocess
 from datetime import datetime
 from PyQt5 import QtCore, QtWidgets, QtGui, Qt
 
-server_IP = '192.168.1.33'  # This is the IP of the ESB Pi. It is a static IP.
+server_IP = '192.168.1.132'  # This is the IP of the ESB Pi. It is a static IP.
 port = 5000
 BUFF = 1024
 
@@ -15,7 +15,7 @@ logname = time.strftime("log/LC_ClientLog(%H_%M_%S).log", time.localtime())
 logger = logging.getLogger("")
 logging.basicConfig(filename=logname, level=logging.DEBUG)
 
-
+# Get a Timer Reset button. Also Maybe link the abort button to the countdown timer.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class LaunchControl(QtWidgets.QWidget):
@@ -25,20 +25,23 @@ class LaunchControl(QtWidgets.QWidget):
 
         super().__init__()
 
+        self.server_address = (server_IP,port)
+        self.connection_status = False
+
         self.init_ui()
 
     def init_ui(self):
 
         # initializes the GUI with the pictures found in the pictures folder.
 
-        palettered = QtGui.QPalette()
-        palettered.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
+        self.palettered = QtGui.QPalette()
+        self.palettered.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
 
-        paletteblack = QtGui.QPalette()
-        paletteblack.setColor(QtGui.QPalette.Foreground, QtCore.Qt.black)
+        self.paletteblack = QtGui.QPalette()
+        self.paletteblack.setColor(QtGui.QPalette.Foreground, QtCore.Qt.black)
 
-        paletteblue = QtGui.QPalette()
-        paletteblue.setColor(QtGui.QPalette.Foreground, QtCore.Qt.blue)
+        self.paletteblue = QtGui.QPalette()
+        self.paletteblue.setColor(QtGui.QPalette.Foreground, QtCore.Qt.blue)
 
         # initial values
         self.kdata = "Open"
@@ -49,12 +52,16 @@ class LaunchControl(QtWidgets.QWidget):
         # time_thread = threading.Thread(target = self.get_time)
         # time_thread.start()
 
-        # self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        #self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.server_address = (server_IP, port)
         self.connection_status = False  # initialzing to a false connection state
         self.arm_status = False
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        grid = QtWidgets.QGridLayout()
+        grid.setSpacing(10)
+        #grid.addWidget(self.serial_feed, tl_vertical_grid_pos, tl_hor_grid_pos, vertical_grid_length_min, hor_grid_width_min
 
         def createLabel(self, stext, smovex, smovey, sresizex, sresizey, sfontsize, storf, scolor):
             # makes code smaller, all the labels in the program
@@ -78,7 +85,7 @@ class LaunchControl(QtWidgets.QWidget):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Pictures
 
-        #switching labels
+        #All of the Pictures that change states.
 
         self.statusbreakred = QtWidgets.QLabel(self)
         self.statusbreakred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
@@ -140,24 +147,69 @@ class LaunchControl(QtWidgets.QWidget):
 
         # def createLabel(self, stext, smovex, smovey, sresizex, sresizey, sfontsize, storf, scolor):
 
-        mainlabel = createLabel(self, 'LAUNCH CONTROL', 10, 20, 500, 50, 24, True, paletteblack)
-        rocketlabel = createLabel(self, 'SDSU ROCKET PROJECT', 780, 650, 500, 50, 20, True, palettered)
-        buttonlabel = createLabel(self, 'Commands:', 90, 190, 800, 80, 13, True, paletteblack)
-        statuslabel = createLabel(self, 'Readings:', 465, 190, 800, 80, 13, True, paletteblack)
-        connectionlabel = createLabel(self, 'Connection:', 985, 23, 500, 50, 9, False, paletteblue)
-        connectionstatus = createLabel(self, 'Not Connected', 1080, 23, 500, 50, 9, False, paletteblue)
-        breakwirelabel = createLabel(self, 'Breakwire Status', 340, 265, 500, 50, 12, False, paletteblue)
-        breakwirechange = createLabel(self, 'Intact', 600, 265, 500, 50, 18, False, paletteblack)
-        mainValvelabel = createLabel(self, 'Main Valve', 340, 325, 500, 50, 12, False, paletteblue)
-        mainValvechange = createLabel(self, 'Open', 615, 325, 500, 50, 18, False, paletteblack)
-        loxValvelabel = createLabel(self, 'Lox Valve', 340, 385, 500, 50, 12, False, paletteblue)
-        loxValvechange = createLabel(self, 'Open', 615, 385, 500, 50, 18, False, paletteblack)
-        keroValvelabel = createLabel(self, 'Kero Valve', 340, 445, 500, 50, 12, False, paletteblue)
-        keroValvechange = createLabel(self, 'Open', 615, 445, 500, 50, 18, False, paletteblack)
-        ignitorstatuslabel = createLabel(self, 'Ignitor Status', 340, 505, 500, 50, 12, False, paletteblue)
-        ignitorstatuschange = createLabel(self, 'Not Lit', 590, 505, 500, 50, 18, False, paletteblack)
-        safteystatus = createLabel(self, 'Saftey Status', 340, 565, 500, 50, 12, False, paletteblue)
-        safteystatuschange = createLabel(self, 'Disarmed', 550, 565, 500, 50, 18, False, paletteblack)
+        self.mainlabel = createLabel(self, 'LAUNCH CONTROL', 10, 20, 500, 50, 24, True, self.paletteblack)
+        self.rocketlabel = createLabel(self, 'SDSU ROCKET PROJECT', 780, 650, 500, 50, 20, True, self.palettered)
+        self.buttonlabel = createLabel(self, 'Commands:', 90, 190, 800, 80, 13, True, self.paletteblack)
+        self.statuslabel = createLabel(self, 'Readings:', 465, 190, 800, 80, 13, True, self.paletteblack)
+        self.connectionlabel = createLabel(self, 'Connection:', 985, 23, 500, 50, 9, False, self.paletteblue)
+        self.breakwirelabel = createLabel(self, 'Breakwire Status', 340, 265, 500, 50, 12, False, self.paletteblue)
+        self.mainValvelabel = createLabel(self, 'Main Valve', 340, 325, 500, 50, 12, False, self.paletteblue)
+        self.loxValvelabel = createLabel(self, 'Lox Valve', 340, 385, 500, 50, 12, False, self.paletteblue)
+        self.keroValvelabel = createLabel(self, 'Kero Valve', 340, 445, 500, 50, 12, False, self.paletteblue)
+        self.ignitorstatuslabel = createLabel(self, 'Ignitor Status', 340, 505, 500, 50, 12, False, self.paletteblue)
+        self.safteystatus = createLabel(self, 'Saftey Status', 340, 565, 500, 50, 12, False, self.paletteblue)
+
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # All of the labels that change states.
+
+        self.connectionstatus = QtWidgets.QLabel(self)
+        self.connectionstatus.setText('Not Connected')
+        self.connectionstatus.move(1080, 23)
+        self.connectionstatus.resize(500, 50)
+        self.connectionstatus.setFont(QtGui.QFont('Times', 9, QtGui.QFont.Bold, False))
+        self.connectionstatus.setPalette(self.paletteblue)
+
+        self.breakwirechange = QtWidgets.QLabel(self)
+        self.breakwirechange.setText('Intact')
+        self.breakwirechange.move(600, 265)
+        self.breakwirechange.resize(500, 50)
+        self.breakwirechange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
+        self.breakwirechange.setPalette(self.paletteblack)
+
+        self.mainValvechange = QtWidgets.QLabel(self)
+        self.mainValvechange.setText('Open')
+        self.mainValvechange.move(615, 325)
+        self.mainValvechange.resize(500, 50)
+        self.mainValvechange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
+        self.mainValvechange.setPalette(self.paletteblack)
+
+        self.loxValvechange = QtWidgets.QLabel(self)
+        self.loxValvechange.setText('Open')
+        self.loxValvechange.move(615, 385)
+        self.loxValvechange.resize(500, 50)
+        self.loxValvechange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
+        self.loxValvechange.setPalette(self.paletteblack)
+
+        self.keroValvechange = QtWidgets.QLabel(self)
+        self.keroValvechange.setText('Open')
+        self.keroValvechange.move(615, 445)
+        self.keroValvechange.resize(500, 50)
+        self.keroValvechange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
+        self.keroValvechange.setPalette(self.paletteblack)
+
+        self.ignitorstatuschange = QtWidgets.QLabel(self)
+        self.ignitorstatuschange.setText('Not Lit')
+        self.ignitorstatuschange.move(590, 505)
+        self.ignitorstatuschange.resize(500, 50)
+        self.ignitorstatuschange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
+        self.ignitorstatuschange.setPalette(self.paletteblack)
+
+        self.safteystatuschange = QtWidgets.QLabel(self)
+        self.safteystatuschange.setText('Disarmed')
+        self.safteystatuschange.move(550, 565)
+        self.safteystatuschange.resize(500, 50)
+        self.safteystatuschange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
+        self.safteystatuschange.setPalette(self.paletteblack)
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -172,15 +224,21 @@ class LaunchControl(QtWidgets.QWidget):
         self.logTextBox.move(800, 85)
         self.logTextBox.append("  =========Action Log=========")
 
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        """self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.Time)
-        self.timer.start(1000)
+        timerbackground = createPicture(self, 'timerback.png', 635, 0, 300, 39)
 
-        self.lcd = QtGui.QLCDNumber(self)
-        self.lcd.display(time.strftime("%H"+":"+"%M"))
+        self.timert = QtWidgets.QLabel(self)
+        self.timert.setText("Countdown:")
+        self.timert.move(670, -18)
+        self.timert.resize(200, 50)
+        self.timert.setFont(QtGui.QFont('Times', 8, QtGui.QFont.Bold, True))
 
-        Trying to set up a digital Clock"""
+        self.timeup = 10
+        self.timert = QtWidgets.QLabel(self)
+        self.timert.setText("10")
+        self.timert.move(820, -10)
+        self.timert.resize(100, 50)
+        self.timert.setFont(QtGui.QFont('Times', 20, QtGui.QFont.Bold, False))
+
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         """color = QtGui.QColor(0,0,0)
 
@@ -191,6 +249,7 @@ class LaunchControl(QtWidgets.QWidget):
 
         Figuring out how to color"""
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self.setLayout(grid)
         self.homeButtons()
         self.show()
 
@@ -206,59 +265,73 @@ class LaunchControl(QtWidgets.QWidget):
         self.font3 = QtGui.QFont()
         self.font3.setPointSize(12)
 
-        launchBtn = QtWidgets.QPushButton("Launch!", self)
-        launchBtn.resize(290, 100)
-        launchBtn.move(15, 100)
-        launchBtn.setFont(self.font2)
-        launchBtn.clicked.connect(self.launch_app)
+        self.launchBtn = QtWidgets.QPushButton("Launch!", self)
+        self.launchBtn.resize(290, 100)
+        self.launchBtn.move(15, 100)
+        self.launchBtn.setEnabled(False)
+        self.launchBtn.setFont(self.font2)
+        self.launchBtn.clicked.connect(self.launch_app)
 
-        igniteBtn = QtWidgets.QPushButton("Ignite!", self)
-        igniteBtn.resize(210, 70)
-        igniteBtn.move(310, 100)
-        igniteBtn.setFont(self.font3)
-        igniteBtn.clicked.connect(self.ignite_app)
+        self.igniteBtn = QtWidgets.QPushButton("Ignite!", self)
+        self.igniteBtn.resize(210, 70)
+        self.igniteBtn.move(310, 100)
+        self.igniteBtn.setEnabled(False)
+        self.igniteBtn.setFont(self.font3)
+        self.igniteBtn.clicked.connect(self.ignite_app)
 
-        abortBtn = QtWidgets.QPushButton("Abort!", self)
-        abortBtn.resize(210, 70)
-        abortBtn.move(525, 100)
-        abortBtn.setFont(self.font3)
-        abortBtn.clicked.connect(self.abort_app)
+        self.abortBtn = QtWidgets.QPushButton("Abort!", self)
+        self.abortBtn.resize(210, 70)
+        self.abortBtn.move(525, 100)
+        self.abortBtn.setEnabled(False)
+        self.abortBtn.setFont(self.font3)
+        self.abortBtn.clicked.connect(self.abort_app)
 
-        ping_serverBtn = QtWidgets.QPushButton("Ping Server", self)
-        ping_serverBtn.resize(240, 60)
-        ping_serverBtn.move(40, 260)
-        ping_serverBtn.setFont(self.font3)
-        ping_serverBtn.clicked.connect(self.connect_app)
+        self.ping_serverBtn = QtWidgets.QPushButton("Connect", self)
+        self.ping_serverBtn.resize(240, 60)
+        self.ping_serverBtn.move(40, 260)
+        self.ping_serverBtn.setFont(self.font3)
+        self.ping_serverBtn.clicked.connect(self.connect_app)
 
-        open_ventsBtn = QtWidgets.QPushButton("Open Vents", self)
-        open_ventsBtn.resize(240, 60)
-        open_ventsBtn.move(40, 320)
-        open_ventsBtn.setFont(self.font3)
-        open_ventsBtn.clicked.connect(self.openvents_app)
+        self.open_ventsBtn = QtWidgets.QPushButton("Open Vents", self)
+        self.open_ventsBtn.resize(240, 60)
+        self.open_ventsBtn.move(40, 320)
+        self.open_ventsBtn.setFont(self.font3)
+        self.open_ventsBtn.clicked.connect(self.openvents_app)
 
-        close_ventsBtn = QtWidgets.QPushButton("Close Vents", self)
-        close_ventsBtn.resize(240, 60)
-        close_ventsBtn.move(40, 380)
-        close_ventsBtn.setFont(self.font3)
-        close_ventsBtn.clicked.connect(self.closevents_app)
+        self.close_ventsBtn = QtWidgets.QPushButton("Close Vents", self)
+        self.close_ventsBtn.resize(240, 60)
+        self.close_ventsBtn.move(40, 380)
+        self.close_ventsBtn.setFont(self.font3)
+        self.close_ventsBtn.clicked.connect(self.closevents_app)
 
-        close_mainBtn = QtWidgets.QPushButton("Close Main", self)
-        close_mainBtn.resize(240, 60)
-        close_mainBtn.move(40, 440)
-        close_mainBtn.setFont(self.font3)
-        close_mainBtn.clicked.connect(self.closemain_app)
+        self.close_mainBtn = QtWidgets.QPushButton("Close Main", self)
+        self.close_mainBtn.resize(240, 60)
+        self.close_mainBtn.move(40, 440)
+        self.close_mainBtn.setFont(self.font3)
+        self.close_mainBtn.clicked.connect(self.closemain_app)
 
-        safteyBtn = QtWidgets.QPushButton("Toggle Saftey", self)
-        safteyBtn.resize(240, 60)
-        safteyBtn.move(40, 500)
-        safteyBtn.setFont(self.font3)
-        safteyBtn.clicked.connect(self.saftey_app)
+        self.safteyBtn = QtWidgets.QPushButton("Toggle Saftey", self)
+        self.safteyBtn.resize(240, 60)
+        self.safteyBtn.move(40, 500)
+        self.safteyBtn.setFont(self.font3)
+        self.safteyBtn.clicked.connect(self.saftey_app)
 
-        statusBtn = QtWidgets.QPushButton("Read Statuses", self)
-        statusBtn.resize(240, 60)
-        statusBtn.move(40, 560)
-        statusBtn.setFont(self.font3)
-        statusBtn.clicked.connect(self.status_app)
+        self.statusBtn = QtWidgets.QPushButton("Read Statuses", self)
+        self.statusBtn.resize(240, 60)
+        self.statusBtn.move(40, 560)
+        self.statusBtn.setFont(self.font3)
+        self.statusBtn.clicked.connect(self.status_app)
+
+        self.timeBtn = QtWidgets.QPushButton("Start", self)
+        self.timeBtn.move(668, 15)
+        self.timeBtn.resize(125, 20)
+        self.timeBtn.setEnabled(False)
+        self.timeBtn.clicked.connect(self.timer1)
+
+        self.timeBtn = QtWidgets.QPushButton("Ping Server", self)
+        self.timeBtn.move(1070, 20)
+        self.timeBtn.resize(125, 20)
+        self.timeBtn.clicked.connect(self.ping_app)
 
     def paintEvent(self, e):
 
@@ -297,11 +370,16 @@ class LaunchControl(QtWidgets.QWidget):
         color.QtWidgets.QColorDialog.getColor()
         self.styleChoice.setStyleSheet("QWidget { background-color: {}".format(color.name()))
 
-    def Time(self):  # needswork(NotWorking)
+    def timer0(self):
+        if self.timeup > 0:
+            self.timeup -= 1
+            self.timert.setText(str(self.timeup))
 
-        # going to display time on the GUI
-
-        self.lcd.display(time.strftime("%H" + ":" + "%M"))
+    def timer1(self):
+        self.logTextBox.append("  >  Timer Started!{}".format(time.strftime("   -\t(%H:%M:%S)", time.localtime())))
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.timer0)
+        self.timer.start(1000)
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # This is where the functions are for the buttons and toolbar
@@ -337,7 +415,24 @@ class LaunchControl(QtWidgets.QWidget):
     def connect_app(self):
 
         self.logTextBox.append("  >  Connecting...{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
-        logger.debug("Connecting... at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+
+        try:
+            self.s = socket.create_connection(self.server_address,timeout = 1.5)
+            QtWidgets.QMessageBox.information(self, 'Connection Results', 'Socket Successfully Bound.\nClick "Read Statuses " to start')
+            self.connection_status = True
+            self.connectionstatus.setText('Connected')
+            self.logTextBox.append("  >  Connected{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+            logger.debug("Connection Successful at {}".format(time.asctime()))
+
+        except socket.error as e:
+            logger.debug("Connection Unsuccessful at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+            reply = QtWidgets.QMessageBox.critical(self, "Connection Results", "Couldn't connect to {} at {}. Error is: \n{}.\nMake sure server is listening.".format(self.server_address[0],self.server_address[1],e),
+                                                    QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Retry)
+            if reply == QtWidgets.QMessageBox.Cancel:
+                self.logTextBox.append("  >  Connection Canceled{}".format(time.strftime(" -\t(%H:%M:%S)", time.localtime())))
+            elif reply == QtWidgets.QMessageBox.Retry:
+                self.connect_app()
+
 
     def openvents_app(self):
 
@@ -357,9 +452,35 @@ class LaunchControl(QtWidgets.QWidget):
 
     def saftey_app(self):
 
-        self.statussafteyred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
-        self.logTextBox.append("  >  Saftey Toggled{}".format(time.strftime("   -\t(%H:%M:%S)", time.localtime())))
-        logger.debug("Saftey Toggled at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+        if self.connection_status == True:
+            if self.arm_status == False:
+                self.igniteBtn.setEnabled(True)
+                self.launchBtn.setEnabled(True)
+                self.abortBtn.setEnabled(True)
+                self.timeBtn.setEnabled(True)
+                self.safteystatuschange.setText('Armed')
+                self.statussafteyred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
+                self.logTextBox.append("  >  Saftey Toggled{}".format(time.strftime("   -\t(%H:%M:%S)", time.localtime())))
+                self.arm_status = True
+
+            elif self.arm_status == True:
+                self.igniteBtn.setEnabled(False)
+                self.launchBtn.setEnabled(False)
+                self.abortBtn.setEnabled(False)
+                self.timeBtn.setEnabled(False)
+                self.safteystatuschange.setText('Disarmed')
+                self.statussafteyred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
+                self.logTextBox.append("  >  Saftey Toggled{}".format(time.strftime("   -\t(%H:%M:%S)", time.localtime())))
+                self.arm_status = False
+
+        elif self.connection_status == False:
+            logger.debug("Connection Error, Safety will not toggle unless client is connected to server at {}".format(time.asctime()))
+            reply = QtWidgets.QMessageBox.critical(self, 'Connection Error', 'Safety will not toggle unless client is connected to server',
+                                                    QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Retry)
+            if reply == QtWidgets.QMessageBox.Cancel:
+                self.logTextBox.append("  >  Saftey Canceled{}".format(time.strftime("       -\t(%H:%M:%S)", time.localtime())))
+            elif reply == QtWidgets.QMessageBox.Retry:
+                self.saftey_app()
 
     def status_app(self):
 
@@ -368,13 +489,145 @@ class LaunchControl(QtWidgets.QWidget):
 
     def ping_app(self):
 
-        self.logTextBox.append("  >  Pinging Server{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
-        logger.debug("Pinging Server at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+        QtWidgets.QMessageBox.information(self, '', 'Pinging...')
+        response = subprocess.call(["ping", server_IP,"-c1", "-W1","-q"])
+        logger.debug("Pinging Server at {}".format(time.asctime()))
+        self.logTextBox.append("  >  Pinging Server{}".format(time.strftime("    -\t(%H:%M:%S)", time.localtime())))
+
+        if response == 0:
+            QtWidgets.QMessageBox.information(self, 'Ping Results', 'Ping to {} sucessful!\nGo ahead and connect.'.format(server_IP))
+            logger.debug("Ping_Sucessful at {}".format(time.asctime()))
+            self.logTextBox.append("  >  Pinging Successful{}".format(time.strftime(" -\t(%H:%M:%S)", time.localtime())))
+        else:
+            QtWidgets.QMessageBox.information(self, 'Ping Results', "Ping to {} unsucessful!\nCheck the IP you're connecting to, or if server is online.".format(server_IP))
+            logger.debug("Ping_Unsucessful at {}".format(time.asctime()))
+            self.logTextBox.append("  >  Pinging Unsucessful{}".format(time.strftime(" -\t(%H:%M:%S)", time.localtime())))
+
+    def send_info(self,command):
+
+        if command == 'MO':
+            message = 'main_open'
+            logger.debug("main_open at {}".format(time.asctime()))
+        elif command == 'MC':
+            message = 'main_close'
+            logger.debug("main_close at {}".format(time.asctime()))
+        elif command == 'VO':
+            message = 'vents_open'
+            logger.debug("vents_open at {}".format(time.asctime()))
+        elif command == 'VC':
+            message = 'vents_close'
+            logger.debug("vents_close at {}".format(time.asctime()))
+        elif command == 'L':
+            message = 'launch'
+            logger.debug("launch at {}".format(time.asctime()))
+        elif command == 'A':
+            message = 'abort'
+            logger.debug("abort at {}".format(time.asctime()))
+        elif command == "Ig":
+            message = "ign1_on"
+            logger.debug("ign1_on at {}".format(time.asctime()))
+
+        self.s.send(message)
+        data = self.s.recv(BUFF)
+        time_now = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
+        if data == 'Ignitor 1 Lit':
+            time_now = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
+            self.statusignitorred.setPixmap(QtGui.QPixmap('pictures/statgreen.png')) #Check if he wants green
+            self.ignitorstatuschange.setText('Lit af')
+            logging.info("Ignitor 1 lit: {}".format(time_now))
+            logger.debug("Ignitor_1_lit at {}".format(time.asctime()))
+        elif data == 'Ignitor 1 Off':
+            self.statusignitorred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
+            self.ignitorstatuschange.setText('Not Lit')
+            logger.debug("Ignitor_1_Off at {}".format(time.asctime()))
+
+    def switch_label(self,label):
+
+        #These statements change the status of the labels
+        if label == 'bwire':
+            if self.breakwirechange['text'] == 'Intact':
+                self.breakwirechange.setText('Broken')
+                self.statusbreakred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
+                logger.debug("bwire_Broken at {}".format(time.asctime()))
+            elif self.breakwirechange['text'] == 'Broken':
+                self.breakwirechange.setText('Intact')
+                self.statusbreakred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
+                logger.debug("bwire_Intact at {}".format(time.asctime()))
+
+        if label == 'main':
+            if self.mainValvechange['text'] == 'Open':
+                self.mainValvechange.setText('Closed')
+                self.mainValvechange.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
+                logger.debug("main_Closed at {}".format(time.asctime()))
+            elif self.mainValvechange['text'] == 'Closed':
+                self.mainValvechange.setText('Open')
+                self.mainValvechange.setPixmap(QtGui.QPixmap('pictures/statred.png'))
+                logger.debug("main_Open at {}".format(time.asctime()))
+
+        if label == 'kero':
+            if self.keroValvechange['text'] == 'Open':
+                self.keroValvechange.setText('Closed')
+                self.keroValvechange.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
+                logger.debug("kero_Closed at {}".format(time.asctime()))
+            elif self.keroValvechange['text'] == 'Open':
+                self.keroValvechange.setText('Open')
+                self.keroValvechange.setPixmap(QtGui.QPixmap('pictures/statred.png'))
+                logger.debug("kero_Open at {}".format(time.asctime()))
+
+        if label == 'lox':
+            if self.loxValvechange['text'] == 'Open':
+                self.loxValvechange.setText('Closed')
+                self.loxValvechange.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
+                logger.debug("lox_Closed at {}".format(time.asctime()))
+            elif self.loxValvechange['text'] == 'Open':
+                self.loxValvechange.setText('Open')
+                self.loxValvechange.setPixmap(QtGui.QPixmap('pictures/statred.png'))
+                logger.debug("lox_Open at {}".format(time.asctime()))
+
+    def get_info(self):
+
+        try:
+            self.s.send('bwire_status')
+            self.bdata = self.s.recv(BUFF)
+
+            self.s.send('main_status')
+            self.mdata = self.s.recv(BUFF)
+
+            self.s.send('kero_status')
+            self.kdata = self.s.recv(BUFF)
+
+            self.s.send('LOX_status')
+            self.ldata = self.s.recv(BUFF)
+
+        except (socket.error,AttributeError) as err:
+            time_now = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
+            logging.error("{},{}".format(time_now,err))
+            logger.debug("{},{}".format(time_now,err))
+
+        #The following if statements call the label to be changed only if the server sends a message that contradicts the current status of the label 
+        if self.bdata != self.breakwirechange['text']:
+            self.switch_label("bwire")
+            logger.debug("bwire_status of {} at {}".format(str(self.bdata),time.asctime()))
+
+        if self.mdata != self.mainValvechange['text']:
+            self.switch_label('main')
+            logger.debug("main_status of {} at {}".format(str(self.mdata),time.asctime()))
+
+        if self.kdata != self.keroValvechange['text']:
+            self.switch_label('kero')
+            logger.debug("kero_status of {} at {}".format(str(self.kdata),time.asctime()))
+
+        if self.ldata != self.loxValvechange['text']:
+            self.switch_label('lox')
+            logger.debug("lox_status of {} at {}".format(str(self.ldata),time.asctime()))
+
+        self.master.after(200,self.get_info)
+
 
     def close_app(self):
         # exits GUI
         self.logTextBox.append(">  Exiting...{}".format(time.strftime("\t-           (%H:%M:%S)", time.localtime())))
-        choice = QtWidgets.QMessageBox.question(self, "Confirmation.", "Are you sure you want to exit?",
+        choice = QtWidgets.QMessageBox.question(self, "Confirmation.", "Are you sure you want to exit?", 
                                                 QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
         if choice == QtWidgets.QMessageBox.Yes:
             print("System Closed")
