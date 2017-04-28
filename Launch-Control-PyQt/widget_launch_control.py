@@ -7,7 +7,7 @@ import subprocess
 from datetime import datetime
 from PyQt5 import QtCore, QtWidgets, QtGui, Qt
 
-server_IP = '192.168.1.132'  # This is the IP of the ESB Pi. It is a static IP.
+server_IP = '192.168.1.33'  # This is the IP of the ESB Pi. It is a static IP.
 port = 5000
 BUFF = 1024
 
@@ -320,7 +320,7 @@ class LaunchControl(QtWidgets.QWidget):
         self.statusBtn.resize(240, 60)
         self.statusBtn.move(40, 560)
         self.statusBtn.setFont(self.font3)
-        self.statusBtn.clicked.connect(self.status_app)
+        self.statusBtn.clicked.connect(self.get_info)
 
         self.timeBtn = QtWidgets.QPushButton("Start", self)
         self.timeBtn.move(668, 15)
@@ -490,7 +490,8 @@ class LaunchControl(QtWidgets.QWidget):
     def ping_app(self):
 
         QtWidgets.QMessageBox.information(self, '', 'Pinging...')
-        response = subprocess.call(["ping", server_IP,"-c1", "-W1","-q"])
+        #response = subprocess.call(["ping", server_IP,"-c1", "-W1","-q"])
+        response = subprocess.call("ping {} -n 1 -w 1".format(server_IP)) #This is Windows syntax.
         logger.debug("Pinging Server at {}".format(time.asctime()))
         self.logTextBox.append("  >  Pinging Server{}".format(time.strftime("    -\t(%H:%M:%S)", time.localtime())))
 
@@ -506,25 +507,25 @@ class LaunchControl(QtWidgets.QWidget):
     def send_info(self,command):
 
         if command == 'MO':
-            message = 'main_open'
+            message = b'main_open'
             logger.debug("main_open at {}".format(time.asctime()))
         elif command == 'MC':
-            message = 'main_close'
+            message = b'main_close'
             logger.debug("main_close at {}".format(time.asctime()))
         elif command == 'VO':
-            message = 'vents_open'
+            message = b'vents_open'
             logger.debug("vents_open at {}".format(time.asctime()))
         elif command == 'VC':
-            message = 'vents_close'
+            message = b'vents_close'
             logger.debug("vents_close at {}".format(time.asctime()))
         elif command == 'L':
-            message = 'launch'
+            message = b'launch'
             logger.debug("launch at {}".format(time.asctime()))
         elif command == 'A':
-            message = 'abort'
+            message = b'abort'
             logger.debug("abort at {}".format(time.asctime()))
         elif command == "Ig":
-            message = "ign1_on"
+            message = b"ign1_on"
             logger.debug("ign1_on at {}".format(time.asctime()))
 
         self.s.send(message)
@@ -545,58 +546,60 @@ class LaunchControl(QtWidgets.QWidget):
 
         #These statements change the status of the labels
         if label == 'bwire':
-            if self.breakwirechange['text'] == 'Intact':
+            if self.breakwirechange.text() == 'Intact':
                 self.breakwirechange.setText('Broken')
                 self.statusbreakred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
                 logger.debug("bwire_Broken at {}".format(time.asctime()))
-            elif self.breakwirechange['text'] == 'Broken':
+            elif self.breakwirechange.text() == 'Broken':
                 self.breakwirechange.setText('Intact')
                 self.statusbreakred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
                 logger.debug("bwire_Intact at {}".format(time.asctime()))
 
         if label == 'main':
-            if self.mainValvechange['text'] == 'Open':
+            if self.mainValvechange.text() == 'Open':
                 self.mainValvechange.setText('Closed')
                 self.mainValvechange.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
                 logger.debug("main_Closed at {}".format(time.asctime()))
-            elif self.mainValvechange['text'] == 'Closed':
+            elif self.mainValvechange.text() == 'Closed':
                 self.mainValvechange.setText('Open')
                 self.mainValvechange.setPixmap(QtGui.QPixmap('pictures/statred.png'))
                 logger.debug("main_Open at {}".format(time.asctime()))
 
         if label == 'kero':
-            if self.keroValvechange['text'] == 'Open':
+            if self.keroValvechange.text() == 'Open':
                 self.keroValvechange.setText('Closed')
                 self.keroValvechange.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
                 logger.debug("kero_Closed at {}".format(time.asctime()))
-            elif self.keroValvechange['text'] == 'Open':
+            elif self.keroValvechange.text() == 'Open':
                 self.keroValvechange.setText('Open')
                 self.keroValvechange.setPixmap(QtGui.QPixmap('pictures/statred.png'))
                 logger.debug("kero_Open at {}".format(time.asctime()))
 
         if label == 'lox':
-            if self.loxValvechange['text'] == 'Open':
+            if self.loxValvechange.text() == 'Open':
                 self.loxValvechange.setText('Closed')
                 self.loxValvechange.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
                 logger.debug("lox_Closed at {}".format(time.asctime()))
-            elif self.loxValvechange['text'] == 'Open':
+            elif self.loxValvechange.text() == 'Open':
                 self.loxValvechange.setText('Open')
                 self.loxValvechange.setPixmap(QtGui.QPixmap('pictures/statred.png'))
                 logger.debug("lox_Open at {}".format(time.asctime()))
 
     def get_info(self):
 
+        infotimer = QtCore.QTimer()
+
         try:
-            self.s.send('bwire_status')
+            self.s.send(b'bwire_status')
             self.bdata = self.s.recv(BUFF)
 
-            self.s.send('main_status')
+            self.s.send(b'main_status')
             self.mdata = self.s.recv(BUFF)
 
-            self.s.send('kero_status')
+            self.s.send(b'kero_status')
             self.kdata = self.s.recv(BUFF)
 
-            self.s.send('LOX_status')
+            self.s.send(b'LOX_status')
             self.ldata = self.s.recv(BUFF)
 
         except (socket.error,AttributeError) as err:
@@ -605,23 +608,24 @@ class LaunchControl(QtWidgets.QWidget):
             logger.debug("{},{}".format(time_now,err))
 
         #The following if statements call the label to be changed only if the server sends a message that contradicts the current status of the label 
-        if self.bdata != self.breakwirechange['text']:
+        if self.bdata != self.breakwirechange.text():
             self.switch_label("bwire")
             logger.debug("bwire_status of {} at {}".format(str(self.bdata),time.asctime()))
 
-        if self.mdata != self.mainValvechange['text']:
+        if self.mdata != self.mainValvechange.text():
             self.switch_label('main')
             logger.debug("main_status of {} at {}".format(str(self.mdata),time.asctime()))
 
-        if self.kdata != self.keroValvechange['text']:
+        if self.kdata != self.keroValvechange.text():
             self.switch_label('kero')
             logger.debug("kero_status of {} at {}".format(str(self.kdata),time.asctime()))
 
-        if self.ldata != self.loxValvechange['text']:
+        if self.ldata != self.loxValvechange.text():
             self.switch_label('lox')
             logger.debug("lox_status of {} at {}".format(str(self.ldata),time.asctime()))
 
-        self.master.after(200,self.get_info)
+        infotimer.timeout.connect(self.get_info)
+        infotimer.start(200)
 
 
     def close_app(self):

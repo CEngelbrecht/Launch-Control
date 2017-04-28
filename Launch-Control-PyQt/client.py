@@ -6,7 +6,7 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIcon,QPixmap,QFont
 from tabs import TabManager
 
-server_IP = '192.168.1.132'  # This is the IP of the ESB Pi. It is a static IP.
+server_IP = '192.168.1.33'  # This is the IP of the ESB Pi. It is a static IP.
 port = 5000
 BUFF = 1024
 
