@@ -52,7 +52,6 @@ class LaunchControl(QtWidgets.QWidget):
         # time_thread = threading.Thread(target = self.get_time)
         # time_thread.start()
 
-        #self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.server_address = (server_IP, port)
         self.connection_status = False  # initialzing to a false connection state
         self.arm_status = False
@@ -153,9 +152,9 @@ class LaunchControl(QtWidgets.QWidget):
         self.statuslabel = createLabel(self, 'Readings:', 465, 190, 800, 80, 13, True, self.paletteblack)
         self.connectionlabel = createLabel(self, 'Connection:', 985, 23, 500, 50, 9, False, self.paletteblue)
         self.breakwirelabel = createLabel(self, 'Breakwire Status', 340, 265, 500, 50, 12, False, self.paletteblue)
-        self.mainValvelabel = createLabel(self, 'Main Valve', 340, 325, 500, 50, 12, False, self.paletteblue)
-        self.loxValvelabel = createLabel(self, 'Lox Valve', 340, 385, 500, 50, 12, False, self.paletteblue)
-        self.keroValvelabel = createLabel(self, 'Kero Valve', 340, 445, 500, 50, 12, False, self.paletteblue)
+        self.mainValvelabel = createLabel(self, 'Main Propellant Valve', 338, 325, 500, 50, 10, False, self.paletteblue)
+        self.loxValvelabel = createLabel(self, 'Lox Vent Valve', 340, 385, 500, 50, 12, False, self.paletteblue)
+        self.keroValvelabel = createLabel(self, 'Kero Vent Valve', 340, 445, 500, 50, 12, False, self.paletteblue)
         self.ignitorstatuslabel = createLabel(self, 'Ignitor Status', 340, 505, 500, 50, 12, False, self.paletteblue)
         self.safteystatus = createLabel(self, 'Saftey Status', 340, 565, 500, 50, 12, False, self.paletteblue)
 
@@ -227,17 +226,23 @@ class LaunchControl(QtWidgets.QWidget):
         timerbackground = createPicture(self, 'timerback.png', 635, 0, 300, 39)
 
         self.timert = QtWidgets.QLabel(self)
-        self.timert.setText("Countdown:")
+        self.timert.setText("Countdown: ")
         self.timert.move(670, -18)
         self.timert.resize(200, 50)
         self.timert.setFont(QtGui.QFont('Times', 8, QtGui.QFont.Bold, True))
 
-        self.timeup = 10
+        self.timeup = -60
         self.timert = QtWidgets.QLabel(self)
-        self.timert.setText("10")
-        self.timert.move(820, -10)
+        self.timert.setText("-60")
+        self.timert.move(845, -10)
         self.timert.resize(100, 50)
         self.timert.setFont(QtGui.QFont('Times', 20, QtGui.QFont.Bold, False))
+
+        self.timerT = QtWidgets.QLabel(self)
+        self.timerT.setText("T")
+        self.timerT.move(800, -10)
+        self.timerT.resize(100, 50)
+        self.timerT.setFont(QtGui.QFont('Times', 20, QtGui.QFont.Bold, False))
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         """color = QtGui.QColor(0,0,0)
@@ -328,10 +333,10 @@ class LaunchControl(QtWidgets.QWidget):
         self.timeBtn.setEnabled(False)
         self.timeBtn.clicked.connect(self.timer1)
 
-        self.timeBtn = QtWidgets.QPushButton("Ping Server", self)
-        self.timeBtn.move(1070, 20)
-        self.timeBtn.resize(125, 20)
-        self.timeBtn.clicked.connect(self.ping_app)
+        self.pingBtn = QtWidgets.QPushButton("Ping Server", self)
+        self.pingBtn.move(1070, 20)
+        self.pingBtn.resize(125, 20)
+        self.pingBtn.clicked.connect(self.ping_app)
 
     def paintEvent(self, e):
 
@@ -363,17 +368,11 @@ class LaunchControl(QtWidgets.QWidget):
         pen = QtGui.QPen(QtCore.Qt.black, 2, QtCore.Qt.SolidLine)
         qp.setPen(pen)
 
-    def color_picker(self):  # needswork(NotWorking)
-
-        # Not Functioning yet, used to paint GUI. (I am using pictures right now to do that)
-
-        color.QtWidgets.QColorDialog.getColor()
-        self.styleChoice.setStyleSheet("QWidget { background-color: {}".format(color.name()))
-
     def timer0(self):
-        if self.timeup > 0:
-            self.timeup -= 1
-            self.timert.setText(str(self.timeup))
+        self.timeup += 1
+        self.timert.setText(str(self.timeup))
+        if self.timeup >= 1:
+            self.timerT.setText("T+")
 
     def timer1(self):
         self.logTextBox.append("  >  Timer Started!{}".format(time.strftime("   -\t(%H:%M:%S)", time.localtime())))
@@ -388,6 +387,7 @@ class LaunchControl(QtWidgets.QWidget):
 
         self.logTextBox.append("  >  Launching!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
         logger.debug("Launching at {}".format(time.asctime()))
+        self.send_info('L')
 
     def break_status(self):
 
@@ -406,11 +406,13 @@ class LaunchControl(QtWidgets.QWidget):
         self.statusignitorred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
         self.logTextBox.append("  >  Igniting!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
         logger.debug("Igniting at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+        self.send_info('Ig')
 
     def abort_app(self):
 
         self.logTextBox.append("  >  Aborting!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
         logger.debug("Aborting at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+        self.send_info('A')
 
     def connect_app(self):
 
@@ -438,17 +440,20 @@ class LaunchControl(QtWidgets.QWidget):
 
         self.logTextBox.append("  >  Vents Opened{}".format(time.strftime("    -\t(%H:%M:%S)", time.localtime())))
         logger.debug("Vents Opened at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+        self.send_info('VO')
 
     def closevents_app(self):
 
         self.logTextBox.append("  >  Vents Closed{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
         logger.debug("Vents Closed at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+        self.send_info('VC')
 
     def closemain_app(self):
 
         self.statusmainred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
-        self.logTextBox.append("  >  Main Closed{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+        self.logTextBox.append("  >  Main Propellant Valve Closed{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
         logger.debug("Main Closed at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+        self.send_info('MC')
 
     def saftey_app(self):
 
@@ -481,11 +486,6 @@ class LaunchControl(QtWidgets.QWidget):
                 self.logTextBox.append("  >  Saftey Canceled{}".format(time.strftime("       -\t(%H:%M:%S)", time.localtime())))
             elif reply == QtWidgets.QMessageBox.Retry:
                 self.saftey_app()
-
-    def status_app(self):
-
-        self.logTextBox.append("  >  Reading{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
-        logger.debug("Reading at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
 
     def ping_app(self):
 
@@ -586,8 +586,9 @@ class LaunchControl(QtWidgets.QWidget):
                 logger.debug("lox_Open at {}".format(time.asctime()))
 
     def get_info(self):
-
-        infotimer = QtCore.QTimer()
+        
+        self.logTextBox.append("  >  Reading{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+        logger.debug("Reading at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
 
         try:
             self.s.send(b'bwire_status')
@@ -609,23 +610,27 @@ class LaunchControl(QtWidgets.QWidget):
 
         #The following if statements call the label to be changed only if the server sends a message that contradicts the current status of the label 
         if self.bdata != self.breakwirechange.text():
-            self.switch_label("bwire")
+            #self.switch_label("bwire")
             logger.debug("bwire_status of {} at {}".format(str(self.bdata),time.asctime()))
 
         if self.mdata != self.mainValvechange.text():
-            self.switch_label('main')
+            #self.switch_label('main')
+            print("Main Changed")
             logger.debug("main_status of {} at {}".format(str(self.mdata),time.asctime()))
 
         if self.kdata != self.keroValvechange.text():
-            self.switch_label('kero')
+            #self.switch_label('kero')
+            print("Kero Changed")
             logger.debug("kero_status of {} at {}".format(str(self.kdata),time.asctime()))
 
         if self.ldata != self.loxValvechange.text():
-            self.switch_label('lox')
+            #self.switch_label('lox')
+            print("Lox Changed")
             logger.debug("lox_status of {} at {}".format(str(self.ldata),time.asctime()))
 
-        infotimer.timeout.connect(self.get_info)
-        infotimer.start(200)
+        self.infotimer = QtCore.QTimer()
+        self.infotimer.timeout.connect(self.get_info)
+        self.infotimer.start(200)
 
 
     def close_app(self):
