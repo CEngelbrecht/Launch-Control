@@ -22,9 +22,7 @@ server_IP = '192.168.1.33' #This is the IP of the ESB Pi. It is a static IP.
 port = 5000
 BUFF = 1024
 
-logname=time.strftime("LC_ClientLog(%H_%M_%S.log)",time.localtime())
-logger = logging.getLogger("Feedback")                                                                 
-logging.basicConfig(filename=logname, level=logging.DEBUG)
+logging.basicConfig(filename = 'LC_Client_Log.txt',level = logging.INFO)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -44,22 +42,22 @@ class GUI:
 
 		safety_frame = Tk.Frame(master)
 		safety_frame.pack(fill = 'x', side = 'top',expand = True)
-		safety_frame.config(bd = 10,relief = Tk.RAISED)
+		safety_frame.config(bd = 10,relief = Tk.RIDGE)
 
 		valve_frame = Tk.Frame(master)
 		valve_frame.pack(fill = 'x',side = 'left',expand = True)
 		#valve_frame.grid(row = 2, column = 0, sticky = 'SW')
-		valve_frame.config(bd = 10, relief = Tk.RAISED)
+		valve_frame.config(bd = 10, relief = Tk.RIDGE)
 
 		connection_frame = Tk.Frame(master)
 		connection_frame.pack(fill = 'x',side = 'top',expand = True)
 		#connection_frame.grid(row = 0 ,column = 1,sticky= 'E')
-		connection_frame.config(bd = 10, relief = Tk.RAISED)
+		connection_frame.config(bd = 10, relief = Tk.RIDGE)
 
 		launch_frame = Tk.Frame(master)
 		launch_frame.pack(fill = 'x', side = 'right',expand = True)
 		#launch_frame.grid(row = 1,column = 1,sticky= 'E')
-		launch_frame.config(bd = 10, relief = Tk.RAISED)
+		launch_frame.config(bd = 10, relief = Tk.RIDGE)
 
 		def empty_Label_Method():
 			self.empty_label = Tk.Label(launch_frame)
@@ -106,6 +104,8 @@ class GUI:
 		kero_label.grid(row = 4, column = 0,sticky = 'E')
 		ignitor_label = Tk.Label(valve_frame, text = "Ignitor Status",font = FONT)
 		ignitor_label.grid(row = 5, column = 0, sticky = 'E')
+		hgps_label = Tk.Label(valve_frame,text = 'HGPS',font = FONT)
+		hgps_label.grid(row = 6, column = 0,sticky = 'E')
 
 		#status displyed
 		self.b_wire_status_label = Tk.Label(valve_frame,text = 'Intact', font = FONT,bg = 'red')
@@ -118,13 +118,21 @@ class GUI:
 		self.lox_status_label.grid(row = 3, column = 1, sticky = 'W' + 'E')
 		self.ignitor_status_label = Tk.Label(valve_frame,text = 'Not Lit', font = FONT,bg = 'red')
 		self.ignitor_status_label.grid(row = 5, column = 1, sticky = 'W' + 'E')
+		self.hgps_status_label = Tk.Label(valve_frame, text = 'Off',font = FONT,bg = 'red')
+		self.hgps_status_label.grid(row = 6,column = 1,sticky = 'W' + 'E')
 
 		self.vent_open_button = Tk.Button(valve_frame, text = "Open Vents",font = FONT,command = lambda:self.send_info('VO'))
-		self.vent_open_button.grid(row = 6 , column = 0, stick = 'W' + 'E')
+		self.vent_open_button.grid(row = 7 , column = 0, stick = 'W' + 'E')
 		self.vent_close_button = Tk.Button(valve_frame, text = "Close Vents",font = FONT,command = lambda:self.send_info('VC'))
-		self.vent_close_button.grid(row = 6 , column = 1, stick = 'W' + 'E')
+		self.vent_close_button.grid(row = 7 , column = 1, stick = 'W' + 'E')
 		self.main_close_button = Tk.Button(valve_frame, text = "Close Main", font = FONT,command = lambda:self.send_info('MC'))
-		self.main_close_button.grid(row = 7, column = 1, stick = 'W' + 'E')
+		self.main_close_button.grid(row = 8, column = 1, stick = 'W' + 'E')
+		self.ignitor_off_button = Tk.Button(valve_frame, text = "Ignitor Off", font = FONT, command = lambda:self.send_info("IO"))
+		self.ignitor_off_button.grid(row = 8, column = 0,stick = 'W' + 'E')
+		self.hgps_on_button = Tk.Button(valve_frame,text = "HGPS On",font = FONT,command = lambda:self.send_info('HGPS_On'))
+		self.hgps_on_button.grid(row = 9,column = 0,stick = 'W' + 'E')
+		self.hgps_off_button = Tk.Button(valve_frame, text = 'HGPS Off',font = FONT,command = lambda:self.send_info('HGPS_Off'))
+		self.hgps_off_button.grid(row = 9,column = 1, stick = 'W' + 'E')
 
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED, bg="red",bd = 5)#This label handles the time, and is updated more than once a second in the time_thread
 		self.time_label = Tk.Label(time_frame,font = FONT,relief = Tk.RAISED,borderwidth = 3)#This label handles the time, and is updated more than once a second in the time_thread
@@ -139,7 +147,7 @@ class GUI:
 		time_thread = threading.Thread(target = self.get_time)
 		time_thread.start()
 
-		#self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+		#Connection stuff.
 		self.server_address = (server_IP,port)
 		self.connection_status = False #initialzing to a false connection state
 		self.arm_status = False
@@ -163,7 +171,6 @@ class GUI:
 
 		elif self.connection_status == False:
 			msg = tkMessageBox.showerror('Connection Error','Safety will not toggle unless client is connected to server')
-			logger.debug("Connection Error, Safety will not toggle unless client is connected to server at {}".format(time.asctime()))
 
 	def create_connection(self):
 
@@ -172,50 +179,48 @@ class GUI:
 			tkMessageBox.showinfo('Connection Results','Socket Successfully Bound.\nClick "Read Statuses " to start')
 			self.connection_status = True
 			self.connection_status_label2.config (text ='Connected',bg = 'green')
-			logger.debug("Socket_Connect(Successful) at {}".format(time.asctime()))
 
 		except socket.error as e: 
 			msg = tkMessageBox.showerror("Connection Results", "Couldn't connect to {} at {}. Error is: \n{}.\nMake sure server is listening.".format(self.server_address[0],self.server_address[1],e))
-			logger.debug("Socket_Connect couldn't connect to {} at {}. Error is {} at {}".format(self.server_address[0],self.server_address[1],e,time.asctime()))
 
 	def ping_server(self):
 
 		msg = tkMessageBox.showinfo('','Pinging...')
 		response  = subprocess.call(["ping", server_IP,"-c1", "-W1","-q"]) #This is Linux syntax.
-		#response = subprocess.call("ping {} -n 1 -w 1".format(server_IP)) #This is Windows syntax.
-		logger.debug("Pinging Server at {}".format(time.asctime()))
+		#response = subprocess.call("ping {} -n 1 -w 1".format(server_IP)) #This is Windows syntax. 
 
 		if response == 0: 
 			msg = tkMessageBox.showinfo("Ping Results","Ping to {} sucessful!\nGo ahead and connect.".format(server_IP))
-			logger.debug("Ping_Sucessful at {}".format(time.asctime()))
 		else:
 			msg = tkMessageBox.showerror("Ping Results","Ping to {} unsuccessful.\nCheck the IP you're connecting to, or if server is online.".format(server_IP))
-			logger.debug("Ping_Unsucessful at {}".format(time.asctime()))
 
 	def send_info(self,command):
 		#These messages are taken directly from the 'Launch Control Server rev3.py' server script on the ESB Pi. 
 
 		if command == 'MO':
 			message = 'main_open'
-			logger.debug("main_open at {}".format(time.asctime()))
 		elif command == 'MC':
 			message = 'main_close'
-			logger.debug("main_close at {}".format(time.asctime()))
+		#elif command == 'VO':
+		#	message = 'vents_open'
+		#elif command == 'VC':
+			#message = 'vents_close'
 		elif command == 'VO':
-			message = 'vents_open'
-			logger.debug("vents_open at {}".format(time.asctime()))
-		elif command == 'VC':
 			message = 'vents_close'
-			logger.debug("vents_close at {}".format(time.asctime()))
+		elif command == 'VC':
+			message = 'vents_open'
 		elif command == 'L':
 			message = 'launch'
-			logger.debug("launch at {}".format(time.asctime()))
 		elif command == 'A':
 			message = 'abort'
-			logger.debug("abort at {}".format(time.asctime()))
 		elif command == "Ig":
 			message = "ign1_on"
-			logger.debug("ign1_on at {}".format(time.asctime()))
+		elif command == "IO":
+			message = "ign1_off"
+		elif command =='HGPS_On':
+			message = "ign2_on"
+		elif command == 'HGPS_Off':
+			message = 'ign2_off'
 
 		self.s.send(message)
 		data = self.s.recv(BUFF)
@@ -224,46 +229,41 @@ class GUI:
 			time_now = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
 			self.ignitor_status_label.config(text = 'Lit af', bg = 'red')
 			logging.info("Ignitor 1 lit: {}".format(time_now))
-			logger.debug("Ignitor_1_lit at {}".format(time.asctime()))
 		elif data == 'Ignitor 1 Off':
-			self.ignitor_status_label.config(text = 'Not Lit', bg = 'green')
-			logger.debug("Ignitor_1_Off at {}".format(time.asctime()))
+			self.ignitor_status_label.config(text = 'Not Lit', bg = 'green')			
 
+		elif data == 'Ignitor 2 Lit':
+			self.hgps_status_label.config(text = 'On',bg = 'green')
 
-	def switch_label(self,label):  ####
+		elif data == 'Ignitor 2 Off':
+			self.hgps_status_label.config(text = 'Off', bg = 'red') 
+
+	def switch_label(self,label):
 
 		#These statements change the status of the labels 
 		if label == 'bwire':
 			if self.b_wire_status_label['text'] == 'Intact':
 				self.b_wire_status_label.config(text = 'Broken',bg = 'green')
-				logger.debug("bwire_Intact at {}".format(time.asctime()))
 			elif self.b_wire_status_label['text'] == 'Broken':
 				self.b_wire_status_label.config(text = 'Intact',bg = 'red')
-				logger.debug("bwire_Broken at {}".format(time.asctime()))
 
 		if label == 'main':
 			if self.main_status_label['text'] == 'Open':
 				self.main_status_label.config(text = 'Closed',bg = 'green')
-				logger.debug("main_Open at {}".format(time.asctime()))
 			elif self.main_status_label['text'] == 'Closed':
 				self.main_status_label.config(text = 'Open',bg = 'red')
-				logger.debug("main_Closed at {}".format(time.asctime()))
 
 		if label == 'kero':
 			if self.kero_status_label['text'] == 'Open':
 				self.kero_status_label.config(text = 'Closed',bg = 'green')
-				logger.debug("kero_Open at {}".format(time.asctime()))
 			elif self.kero_status_label['text'] == 'Closed':
 				self.kero_status_label.config(text = 'Open',bg = 'red')
-				logger.debug("kero_Closed at {}".format(time.asctime()))
 
 		if label == "lox":
 			if self.lox_status_label['text'] == 'Open':
 				self.lox_status_label.config(text = 'Closed',bg = 'green')
-				logger.debug("lox_Open at {}".format(time.asctime()))
 			elif self.lox_status_label['text'] == 'Closed':
 				self.lox_status_label.config(text = 'Open',bg = 'red')
-				logger.debug("lox_Closed at {}".format(time.asctime()))
 
 	def get_info(self):
 		
@@ -283,7 +283,6 @@ class GUI:
 		except (socket.error,AttributeError) as err:
 			time_now = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
 			logging.error("{},{}".format(time_now,err))
-			logger.debug("{},{}".format(time_now,err))
 
 		#The following if statements call the label to be changed only if the server sends a message that contradicts the current status of the label 
 		if self.bdata != self.b_wire_status_label['text']:
@@ -314,9 +313,8 @@ class GUI:
 			try:
 				self.s.shutdown(socket.SHUT_RDWR) #Close and destroy 
 				self.s.close()
-				logger.debug("Client_Shutdown at {}".format(time.asctime()))
 			except (socket.error, AttributeError) as e: #If the connection wasn't made, then this path is taken.
-				print e
+				print "Error is: {}".format(e)
 
 			master.quit()
 			master.destroy() #Need both for some reason
