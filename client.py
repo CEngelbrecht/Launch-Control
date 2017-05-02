@@ -1,8 +1,9 @@
 import sys
 import time
 import logging
-from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, QWidget, QLabel, QLineEdit, QVBoxLayout
-from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, QWidget, QLabel, QLineEdit, QVBoxLayout, QMessageBox, QPushButton, QStackedWidget
+from PyQt5.QtCore import QTimer
+from PyQt5.QtGui import QIcon,QPixmap,QFont
 from tabs import TabManager
 
 server_IP = '192.168.1.33'  # This is the IP of the ESB Pi. It is a static IP.
@@ -17,14 +18,11 @@ logging.basicConfig(filename=logname, level=logging.DEBUG)
 class Client(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.setGeometry(325,90,1300,1000)
         self.title = 'Launch Control Client'
-        self.left = 50
-        self.top = 50
-        self.width = 1030
-        self.height = 800
+        self.setFixedSize(1225,925)
 
         self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
         self.setWindowIcon(QIcon('pictures/icon.png'))
         #self.setFixedSize(1030, 800)
 
@@ -34,34 +32,39 @@ class Client(QMainWindow):
         self.setCentralWidget(self.table_widget)
 
         self.MenuBar()
-
+        #self.ToolBar()
         self.show()
 
-    def ToolBar(self):
+    '''def ToolBar(self):
         # Sets up the tool bar found right below the Menu. Has usefull applications.
+        # Not being used
 
-        launchAction = QAction(QIcon('pictures/rocket.png'), 'Launch Window', self)
+        homeAction = QAction(QIcon('pictures/home.png'), 'Home', self)
+        #homeAction.triggered.connect(self.close_application)
+
+        launchAction = QAction(QIcon('pictures/rocket.png'), 'Launch Control', self)
         # launchAction.triggered.connect(self.close_application)
 
         exitAction = QAction(QIcon('pictures/exit.png'), 'Exit', self)
-        exitAction.triggered.connect(self.close_application)
+        exitAction.triggered.connect(self.close_app)
 
         settingAction = QAction(QIcon('pictures/settings.png'), 'Settings', self)
         settingAction.triggered.connect(self.client_settings.show)
 
-        connectionAction = QAction(QIcon('pictures/connection.png'), 'Connection Window', self)
+        connectionAction = QAction(QIcon('pictures/connection.png'), 'Connections', self)
         # connectionAction.triggered.connect(self.close_application)
 
-        graphAction = QAction(QIcon('pictures/graph.png'), 'Graph Window', self)
+        graphAction = QAction(QIcon('pictures/graph.png'), 'Graphs', self)
         # graphAction.triggered.connect(self.close_application)
 
 
         self.toolBar = self.addToolBar("Launch Window")
+        self.toolBar.addAction(homeAction)
         self.toolBar.addAction(launchAction)
         self.toolBar.addAction(graphAction)
         self.toolBar.addAction(connectionAction)
         self.toolBar.addAction(settingAction)
-        self.toolBar.addAction(exitAction)
+        self.toolBar.addAction(exitAction)'''
 
     def MenuBar(self):
         # Sets up File and About on top left of page. Most Functions are not completed yet.
@@ -74,7 +77,7 @@ class Client(QMainWindow):
         exitAction = QAction(QIcon('pictures/exit.png'), '&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit Application')
-        exitAction.triggered.connect(self.close_application)
+        exitAction.triggered.connect(self.close_app)
 
         helpAction = QAction(QIcon('pictures/help.png'), '&Help', self)
         helpAction.setShortcut('Ctrl+H')
@@ -96,11 +99,18 @@ class Client(QMainWindow):
         aboutMenu.addAction(helpAction)
         aboutMenu.addAction(aboutAction)
 
-    def close_application(self):
+    def close_app(self):
         # exits GUI
-
-        logger.debug("Application Exited at {}".format(time.asctime()))
-        sys.exit()
+        #self.logTextBox.append(">  Exiting...{}".format(time.strftime("\t-           (%H:%M:%S)", time.localtime())))
+        choice = QMessageBox.question(self, "Confirmation.", "Are you sure you want to exit?",
+                                                QMessageBox.Yes | QMessageBox.No)
+        if choice == QMessageBox.Yes:
+            print("System Closed")
+            logger.debug("Application Exited at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+            sys.exit()
+        else:
+            pass
+            #self.logTextBox.append("> Exit Stopped{}".format(time.strftime("\t-         (%H:%M:%S)", time.localtime())))
 
 
 class ClientSettings(QWidget):
@@ -122,6 +132,12 @@ class ClientSettings(QWidget):
         self.log_folder_field = QLineEdit(self)
         self.log_folder_field.move(10,30)
 
+        self.time_folder_label = QLabel('Time:', self)
+        self.time_folder_label.move(10,60)
+        self.time_folder_field = QLineEdit(self)
+        self.time_folder_field.move(10,80)
+
+
         self.settings_init()
 
     def call_window(self):
@@ -134,7 +150,7 @@ class ClientSettings(QWidget):
         #Unfinished
         #Would load current setting from config
         self.log_folder_field.setText('log')
-
+        self.time_folder_field.setText(str(10))
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
