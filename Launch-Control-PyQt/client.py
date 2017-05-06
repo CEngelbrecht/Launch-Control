@@ -50,7 +50,7 @@ class Client(QMainWindow):
 
         settingAction = QAction(QIcon('pictures/settings.png'), 'Settings', self)
         settingAction.triggered.connect(self.client_settings.show)
-
+        
         connectionAction = QAction(QIcon('pictures/connection.png'), 'Connections', self)
         # connectionAction.triggered.connect(self.close_application)
 

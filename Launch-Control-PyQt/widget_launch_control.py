@@ -96,10 +96,10 @@ class LaunchControl(QtWidgets.QWidget):
         self.statusmainred.move(500, 325)
         self.statusmainred.resize(380, 48)
 
-        self.statusbloxred = QtWidgets.QLabel(self)
-        self.statusbloxred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
-        self.statusbloxred.move(500, 385)
-        self.statusbloxred.resize(380, 48)
+        self.statusloxred = QtWidgets.QLabel(self)
+        self.statusloxred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
+        self.statusloxred.move(500, 385)
+        self.statusloxred.resize(380, 48)
 
         self.statuskerored = QtWidgets.QLabel(self)
         self.statuskerored.setPixmap(QtGui.QPixmap('pictures/statred.png'))
@@ -170,28 +170,28 @@ class LaunchControl(QtWidgets.QWidget):
 
         self.breakwirechange = QtWidgets.QLabel(self)
         self.breakwirechange.setText('Intact')
-        self.breakwirechange.move(600, 265)
+        self.breakwirechange.move(590, 265)
         self.breakwirechange.resize(500, 50)
         self.breakwirechange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
         self.breakwirechange.setPalette(self.paletteblack)
 
         self.mainValvechange = QtWidgets.QLabel(self)
         self.mainValvechange.setText('Open')
-        self.mainValvechange.move(615, 325)
+        self.mainValvechange.move(595, 325)
         self.mainValvechange.resize(500, 50)
         self.mainValvechange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
         self.mainValvechange.setPalette(self.paletteblack)
 
         self.loxValvechange = QtWidgets.QLabel(self)
         self.loxValvechange.setText('Open')
-        self.loxValvechange.move(615, 385)
+        self.loxValvechange.move(595, 385)
         self.loxValvechange.resize(500, 50)
         self.loxValvechange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
         self.loxValvechange.setPalette(self.paletteblack)
 
         self.keroValvechange = QtWidgets.QLabel(self)
         self.keroValvechange.setText('Open')
-        self.keroValvechange.move(615, 445)
+        self.keroValvechange.move(595, 445)
         self.keroValvechange.resize(500, 50)
         self.keroValvechange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
         self.keroValvechange.setPalette(self.paletteblack)
@@ -325,7 +325,7 @@ class LaunchControl(QtWidgets.QWidget):
         self.statusBtn.resize(240, 60)
         self.statusBtn.move(40, 560)
         self.statusBtn.setFont(self.font3)
-        self.statusBtn.clicked.connect(self.get_info)
+        self.statusBtn.clicked.connect(self.read_app)
 
         self.timeBtn = QtWidgets.QPushButton("Start", self)
         self.timeBtn.move(668, 15)
@@ -385,34 +385,47 @@ class LaunchControl(QtWidgets.QWidget):
 
     def launch_app(self):
 
-        self.logTextBox.append("  >  Launching!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
-        logger.debug("Launching at {}".format(time.asctime()))
-        self.send_info('L')
+        if self.connection_status == True:
+            self.logTextBox.append("  >  Launching!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+            logger.debug("Launching at {}".format(time.asctime()))
+            self.send_info('L')
+        elif self.connection_status == False:
+            QtWidgets.QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
 
-    def break_status(self):
+    def read_app(self):
 
-        self.statusbreakred.setPixmap(QtGui.QPixmap('pictures/statgreen'))
+        if self.connection_status == True:
+            self.logTextBox.append("  >  Reading{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+            logger.debug("Reading at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
 
-    def lox_status(self):
+            self.infotimer = QtCore.QTimer()
+            self.infotimer.timeout.connect(self.get_info)
+            self.infotimer.setInterval(200)
+            self.infotimer.start()
+            self.logTextBox.append(" > Starting Get Info Timer{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+            logger.debug("Started Get Info Timer at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
 
-        self.statusbloxred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
-
-    def kero_status(self):
-
-        self.statuskerored.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
+        elif self.connection_status == False:
+            QtWidgets.QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
 
     def ignite_app(self):
 
-        self.statusignitorred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
-        self.logTextBox.append("  >  Igniting!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
-        logger.debug("Igniting at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
-        self.send_info('Ig')
-
+        if self.connection_status == True:
+            self.logTextBox.append("  >  Igniting!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+            logger.debug("Igniting at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+            self.send_info('Ig')
+        elif self.connection_status == False:
+            QtWidgets.QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
+        
     def abort_app(self):
 
-        self.logTextBox.append("  >  Aborting!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
-        logger.debug("Aborting at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
-        self.send_info('A')
+        if self.connection_status == True:
+            self.logTextBox.append("  >  Aborting!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+            logger.debug("Aborting at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+            self.send_info('A')
+        elif self.connection_status == False:
+            QtWidgets.QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
+
 
     def connect_app(self):
 
@@ -438,22 +451,30 @@ class LaunchControl(QtWidgets.QWidget):
 
     def openvents_app(self):
 
-        self.logTextBox.append("  >  Vents Opened{}".format(time.strftime("    -\t(%H:%M:%S)", time.localtime())))
-        logger.debug("Vents Opened at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
-        self.send_info('VO')
+        if self.connection_status == True:
+            self.logTextBox.append("  >  Vents Opened{}".format(time.strftime("    -\t(%H:%M:%S)", time.localtime())))
+            logger.debug("Vents Opened at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+            self.send_info('VO')
+        elif self.connection_status == False:
+            QtWidgets.QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
 
     def closevents_app(self):
 
-        self.logTextBox.append("  >  Vents Closed{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
-        logger.debug("Vents Closed at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
-        self.send_info('VC')
+        if self.connection_status == True:
+            self.logTextBox.append("  >  Vents Closed{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+            logger.debug("Vents Closed at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+            self.send_info('VC')
+        elif self.connection_status == False:
+            QtWidgets.QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
 
     def closemain_app(self):
 
-        self.statusmainred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
-        self.logTextBox.append("  >  Main Propellant Valve Closed{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
-        logger.debug("Main Closed at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
-        self.send_info('MC')
+        if self.connection_status == True:
+            self.logTextBox.append("  >  Main Propellant Valve Closed{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+            logger.debug("Main Closed at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+            self.send_info('MC')
+        elif self.connection_status == False:
+            QtWidgets.QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
 
     def saftey_app(self):
 
@@ -531,13 +552,13 @@ class LaunchControl(QtWidgets.QWidget):
         self.s.send(message)
         data = self.s.recv(BUFF)
         time_now = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
-        if data == 'Ignitor 1 Lit':
+        if data.decode("utf-8") == 'Ignitor 1 Lit':
             time_now = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
-            self.statusignitorred.setPixmap(QtGui.QPixmap('pictures/statgreen.png')) #Check if he wants green
+            self.statusignitorred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
             self.ignitorstatuschange.setText('Lit af')
             logging.info("Ignitor 1 lit: {}".format(time_now))
             logger.debug("Ignitor_1_lit at {}".format(time.asctime()))
-        elif data == 'Ignitor 1 Off':
+        elif data.decode("utf-8") == 'Ignitor 1 Off':
             self.statusignitorred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
             self.ignitorstatuschange.setText('Not Lit')
             logger.debug("Ignitor_1_Off at {}".format(time.asctime()))
@@ -547,48 +568,45 @@ class LaunchControl(QtWidgets.QWidget):
         #These statements change the status of the labels
         if label == 'bwire':
             if self.breakwirechange.text() == 'Intact':
-                self.breakwirechange.setText('Broken')
                 self.statusbreakred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
+                self.breakwirechange.setText('Broken')
                 logger.debug("bwire_Broken at {}".format(time.asctime()))
             elif self.breakwirechange.text() == 'Broken':
-                self.breakwirechange.setText('Intact')
                 self.statusbreakred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
+                self.breakwirechange.setText('Intact')
                 logger.debug("bwire_Intact at {}".format(time.asctime()))
 
         if label == 'main':
             if self.mainValvechange.text() == 'Open':
+                self.statusmainred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
                 self.mainValvechange.setText('Closed')
-                self.mainValvechange.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
                 logger.debug("main_Closed at {}".format(time.asctime()))
             elif self.mainValvechange.text() == 'Closed':
+                self.statusmainred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
                 self.mainValvechange.setText('Open')
-                self.mainValvechange.setPixmap(QtGui.QPixmap('pictures/statred.png'))
                 logger.debug("main_Open at {}".format(time.asctime()))
 
         if label == 'kero':
             if self.keroValvechange.text() == 'Open':
+                self.statuskerored.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
                 self.keroValvechange.setText('Closed')
-                self.keroValvechange.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
                 logger.debug("kero_Closed at {}".format(time.asctime()))
-            elif self.keroValvechange.text() == 'Open':
+            elif self.keroValvechange.text() == 'Closed':
+                self.statuskerored.setPixmap(QtGui.QPixmap('pictures/statred.png'))
                 self.keroValvechange.setText('Open')
-                self.keroValvechange.setPixmap(QtGui.QPixmap('pictures/statred.png'))
                 logger.debug("kero_Open at {}".format(time.asctime()))
 
         if label == 'lox':
             if self.loxValvechange.text() == 'Open':
+                self.statusloxred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
                 self.loxValvechange.setText('Closed')
-                self.loxValvechange.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
                 logger.debug("lox_Closed at {}".format(time.asctime()))
-            elif self.loxValvechange.text() == 'Open':
+            elif self.loxValvechange.text() == 'Closed':
+                self.statusloxred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
                 self.loxValvechange.setText('Open')
-                self.loxValvechange.setPixmap(QtGui.QPixmap('pictures/statred.png'))
                 logger.debug("lox_Open at {}".format(time.asctime()))
 
     def get_info(self):
-        
-        self.logTextBox.append("  >  Reading{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
-        logger.debug("Reading at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
 
         try:
             self.s.send(b'bwire_status')
@@ -609,28 +627,29 @@ class LaunchControl(QtWidgets.QWidget):
             logger.debug("{},{}".format(time_now,err))
 
         #The following if statements call the label to be changed only if the server sends a message that contradicts the current status of the label 
-        if self.bdata != self.breakwirechange.text():
-            #self.switch_label("bwire")
+        if self.bdata.decode("utf-8") != self.breakwirechange.text():
+            self.switch_label("bwire")
+            print("Break Wire Changed:")
+            print(self.bdata)
             logger.debug("bwire_status of {} at {}".format(str(self.bdata),time.asctime()))
 
-        if self.mdata != self.mainValvechange.text():
-            #self.switch_label('main')
+        if self.mdata.decode("utf-8") != self.mainValvechange.text():
+            self.switch_label('main')
             print("Main Changed")
+            print(self.mdata)
             logger.debug("main_status of {} at {}".format(str(self.mdata),time.asctime()))
 
-        if self.kdata != self.keroValvechange.text():
-            #self.switch_label('kero')
+        if self.kdata.decode("utf-8") != self.keroValvechange.text():
+            self.switch_label('kero')
             print("Kero Changed")
+            print(self.kdata)
             logger.debug("kero_status of {} at {}".format(str(self.kdata),time.asctime()))
 
-        if self.ldata != self.loxValvechange.text():
-            #self.switch_label('lox')
+        if self.ldata.decode("utf-8") != self.loxValvechange.text():
+            self.switch_label('lox')
             print("Lox Changed")
+            print(self.ldata)
             logger.debug("lox_status of {} at {}".format(str(self.ldata),time.asctime()))
-
-        self.infotimer = QtCore.QTimer()
-        self.infotimer.timeout.connect(self.get_info)
-        self.infotimer.start(200)
 
 
     def close_app(self):
