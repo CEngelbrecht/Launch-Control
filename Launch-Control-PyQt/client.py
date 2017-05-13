@@ -18,9 +18,9 @@ logging.basicConfig(filename=logname, level=logging.DEBUG)
 class Client(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setGeometry(325,90,1300,1000)
+        self.setGeometry(325,40,1300,1000)
         self.title = 'Launch Control Client'
-        self.setFixedSize(1225,925)
+        self.setFixedSize(1225,950)
 
         self.setWindowTitle(self.title)
         self.setWindowIcon(QIcon('pictures/icon.png'))
