@@ -88,37 +88,37 @@ class LaunchControl(QtWidgets.QWidget):
 
         self.statusbreakred = QtWidgets.QLabel(self)
         self.statusbreakred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
-        self.statusbreakred.move(500, 295)
+        self.statusbreakred.move(500, 335)
         self.statusbreakred.resize(380, 48)
 
         self.statusmainred = QtWidgets.QLabel(self)
         self.statusmainred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
-        self.statusmainred.move(500, 350)
+        self.statusmainred.move(500, 390)
         self.statusmainred.resize(380, 48)
 
         self.statusloxred = QtWidgets.QLabel(self)
         self.statusloxred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
-        self.statusloxred.move(500, 405)
+        self.statusloxred.move(500, 445)
         self.statusloxred.resize(380, 48)
 
         self.statuskerored = QtWidgets.QLabel(self)
         self.statuskerored.setPixmap(QtGui.QPixmap('pictures/statred.png'))
-        self.statuskerored.move(500, 460)
+        self.statuskerored.move(500, 500)
         self.statuskerored.resize(380, 48)
 
         self.statusignitorred = QtWidgets.QLabel(self)
         self.statusignitorred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
-        self.statusignitorred.move(500, 515)
+        self.statusignitorred.move(500, 555)
         self.statusignitorred.resize(380, 48)
 
         self.statussafteyred = QtWidgets.QLabel(self)
         self.statussafteyred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
-        self.statussafteyred.move(500, 570)
+        self.statussafteyred.move(500, 610)
         self.statussafteyred.resize(380, 48)
 
         self.statushgpscolor = QtWidgets.QLabel(self)
         self.statushgpscolor.setPixmap(QtGui.QPixmap('pictures/statred.png'))
-        self.statushgpscolor.move(500, 625)
+        self.statushgpscolor.move(500, 665)
         self.statushgpscolor.resize(380, 48)
 
         # def createPicture(self, spicture, smovex, smovey, sresizex, sresizey):
@@ -126,26 +126,27 @@ class LaunchControl(QtWidgets.QWidget):
         whitetoolbar = createPicture(self, 'white.png', 0, 0, 1200, 80)
         whitebackground = createPicture(self, 'white2.png', 800, 0, 750, 700)
         redstripetoolbar = createPicture(self, 'red.png', 0, 65, 1200, 20)
-        blackbottom = createPicture(self, 'black.png', 0, 700, 1200, 150)
-        blacklogoback = createPicture(self, 'black2.png', 745, 85, 60, 615)
-        sdsulogo = createPicture(self, 'sdsu2.png', 10, 710, 100, 79)
-        redlogounderline = createPicture(self, 'red2.png', 770, 745, 350, 5)
-        whitebtnborder = createPicture(self, 'black3.png', 320, 190, 400, 10)
-        statrborder = createPicture(self, 'rborder.png', 675, 240, 50, 450)
-        statlborder = createPicture(self, 'lborder.png', 315, 240, 50, 450)
-        buttonrborder = createPicture(self, 'rborder.png', 250, 240, 50, 450)
-        buttonlborder = createPicture(self, 'lborder.png', 20, 240, 50, 450)
-        statusboxbreak = createPicture(self, 'statusborder.png', 330, 295, 380, 48)
-        statusboxmain = createPicture(self, 'statusborder.png', 330, 350, 380, 48)
-        statusboxlox = createPicture(self, 'statusborder.png', 330, 405, 380, 48)
-        statusboxkero = createPicture(self, 'statusborder.png', 330, 460, 380, 48)
-        statusboxignitor = createPicture(self, 'statusborder.png', 330, 515, 380, 48)
-        statusboxsaftey = createPicture(self, 'statusborder.png', 330, 570, 380, 48)
-        statusboxhgps = createPicture(self, 'statusborder.png', 330, 625, 380, 48)
-        rocketlogo = createPicture(self, 'rocket2.png', 1030, 700, 150, 150)
-        redstripetoolbar = createPicture(self, 'red.png', 0, 700, 1200, 5)
-        commandbreak = createPicture(self, 'break.png', 110, 245, 100, 10)
-        statusbreak = createPicture(self, 'break.png', 470, 245, 100, 10)
+        blackbottom = createPicture(self, 'black.png', 0, 740, 1200, 150)
+        blacklogoback = createPicture(self, 'black2.png', 745, 85, 60, 655)
+        sdsulogo = createPicture(self, 'sdsu2.png', 10, 750, 100, 79)
+        redlogounderline = createPicture(self, 'red2.png', 770, 785, 350, 5)
+        whitebtnborder = createPicture(self, 'black3.png', 320, 230, 400, 10)
+        statrborder = createPicture(self, 'rborder.png', 675, 280, 50, 450)
+        statlborder = createPicture(self, 'lborder.png', 315, 280, 50, 450)
+        buttonrborder = createPicture(self, 'rborder.png', 250, 280, 50, 450)
+        buttonlborder = createPicture(self, 'lborder.png', 20, 280, 50, 450)
+        statusboxbreak = createPicture(self, 'statusborder.png', 330, 335, 380, 48)
+        statusboxmain = createPicture(self, 'statusborder.png', 330, 390, 380, 48)
+        statusboxlox = createPicture(self, 'statusborder.png', 330, 445, 380, 48)
+        statusboxkero = createPicture(self, 'statusborder.png', 330, 500, 380, 48)
+        statusboxignitor = createPicture(self, 'statusborder.png', 330, 555, 380, 48)
+        statusboxsaftey = createPicture(self, 'statusborder.png', 330, 610, 380, 48)
+        statusboxhgps = createPicture(self, 'statusborder.png', 330, 665, 380, 48)
+        rocketlogo = createPicture(self, 'rocket2.png', 1030, 740, 150, 150)
+        redstripetoolbar = createPicture(self, 'red.png', 0, 740, 1200, 5)
+        commandbreak = createPicture(self, 'break.png', 110, 285, 100, 10)
+        statusbreak = createPicture(self, 'break.png', 470, 285, 100, 10)
+        buttonbreak = createPicture(self, 'break.png', 470, 180, 100, 10)
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Labels
@@ -153,17 +154,17 @@ class LaunchControl(QtWidgets.QWidget):
         # def createLabel(self, stext, smovex, smovey, sresizex, sresizey, sfontsize, storf, scolor):
 
         self.mainlabel = createLabel(self, 'LAUNCH CONTROL', 10, 20, 500, 50, 24, True, self.paletteblack)
-        self.rocketlabel = createLabel(self, 'SDSU ROCKET PROJECT', 780, 700, 500, 50, 20, True, self.palettered)
-        self.buttonlabel = createLabel(self, 'Commands:', 90, 190, 800, 80, 13, True, self.paletteblack)
-        self.statuslabel = createLabel(self, 'Readings:', 465, 190, 800, 80, 13, True, self.paletteblack)
+        self.rocketlabel = createLabel(self, 'SDSU ROCKET PROJECT', 780, 740, 500, 50, 20, True, self.palettered)
+        self.buttonlabel = createLabel(self, 'Commands:', 90, 230, 800, 80, 13, True, self.paletteblack)
+        self.statuslabel = createLabel(self, 'Readings:', 465, 230, 800, 80, 13, True, self.paletteblack)
         self.connectionlabel = createLabel(self, 'Connection:', 985, 23, 500, 50, 9, False, self.paletteblue)
-        self.breakwirelabel = createLabel(self, 'Breakwire Status', 340, 295, 500, 50, 12, False, self.paletteblue)
-        self.mainValvelabel = createLabel(self, 'Main Propellant Valve', 338, 350, 500, 50, 10, False, self.paletteblue)
-        self.loxValvelabel = createLabel(self, 'Lox Vent Valve', 340, 405, 500, 50, 12, False, self.paletteblue)
-        self.keroValvelabel = createLabel(self, 'Kero Vent Valve', 340, 460, 500, 50, 12, False, self.paletteblue)
-        self.ignitorstatuslabel = createLabel(self, 'Ignitor Status', 340, 515, 500, 50, 12, False, self.paletteblue)
-        self.safteystatus = createLabel(self, 'Saftey Status', 340, 570, 500, 50, 12, False, self.paletteblue)
-        self.hgpsstatuslabel = createLabel(self, 'HGPS', 340, 625, 500, 50, 12, False, self.paletteblue)
+        self.breakwirelabel = createLabel(self, 'Breakwire Status', 340, 335, 500, 50, 12, False, self.paletteblue)
+        self.mainValvelabel = createLabel(self, 'Main Propellant Valve', 338, 390, 500, 50, 10, False, self.paletteblue)
+        self.loxValvelabel = createLabel(self, 'Lox Vent Valve', 340, 445, 500, 50, 12, False, self.paletteblue)
+        self.keroValvelabel = createLabel(self, 'Kero Vent Valve', 340, 500, 500, 50, 12, False, self.paletteblue)
+        self.ignitorstatuslabel = createLabel(self, 'Ignitor Status', 340, 555, 500, 50, 12, False, self.paletteblue)
+        self.safteystatus = createLabel(self, 'Saftey Status', 340, 610, 500, 50, 12, False, self.paletteblue)
+        self.hgpsstatuslabel = createLabel(self, 'HGPS', 340, 665, 500, 50, 12, False, self.paletteblue)
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # All of the labels that change states.
@@ -177,49 +178,49 @@ class LaunchControl(QtWidgets.QWidget):
 
         self.breakwirechange = QtWidgets.QLabel(self)
         self.breakwirechange.setText('Intact')
-        self.breakwirechange.move(590, 295)
+        self.breakwirechange.move(590, 335)
         self.breakwirechange.resize(500, 50)
         self.breakwirechange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
         self.breakwirechange.setPalette(self.paletteblack)
 
         self.mainValvechange = QtWidgets.QLabel(self)
         self.mainValvechange.setText('Open')
-        self.mainValvechange.move(595, 350)
+        self.mainValvechange.move(595, 390)
         self.mainValvechange.resize(500, 50)
         self.mainValvechange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
         self.mainValvechange.setPalette(self.paletteblack)
 
         self.loxValvechange = QtWidgets.QLabel(self)
         self.loxValvechange.setText('Open')
-        self.loxValvechange.move(595, 405)
+        self.loxValvechange.move(595, 445)
         self.loxValvechange.resize(500, 50)
         self.loxValvechange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
         self.loxValvechange.setPalette(self.paletteblack)
 
         self.keroValvechange = QtWidgets.QLabel(self)
         self.keroValvechange.setText('Open')
-        self.keroValvechange.move(595, 460)
+        self.keroValvechange.move(595, 500)
         self.keroValvechange.resize(500, 50)
         self.keroValvechange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
         self.keroValvechange.setPalette(self.paletteblack)
 
         self.ignitorstatuschange = QtWidgets.QLabel(self)
         self.ignitorstatuschange.setText('Not Lit')
-        self.ignitorstatuschange.move(590, 515)
+        self.ignitorstatuschange.move(590, 555)
         self.ignitorstatuschange.resize(500, 50)
         self.ignitorstatuschange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
         self.ignitorstatuschange.setPalette(self.paletteblack)
 
         self.safteystatuschange = QtWidgets.QLabel(self)
         self.safteystatuschange.setText('Disarmed')
-        self.safteystatuschange.move(550, 570)
+        self.safteystatuschange.move(550, 610)
         self.safteystatuschange.resize(500, 50)
         self.safteystatuschange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
         self.safteystatuschange.setPalette(self.paletteblack)
 
         self.hgpsstatuschange = QtWidgets.QLabel(self)
         self.hgpsstatuschange.setText('Off')
-        self.hgpsstatuschange.move(600, 625)
+        self.hgpsstatuschange.move(600, 665)
         self.hgpsstatuschange.resize(500, 50)
         self.hgpsstatuschange.setFont(QtGui.QFont('Times', 18, QtGui.QFont.Bold, False))
         self.hgpsstatuschange.setPalette(self.paletteblack)
@@ -233,7 +234,7 @@ class LaunchControl(QtWidgets.QWidget):
         self.font.setPointSize(12)
         self.logTextBox.setFont(self.font)
         self.logTextBox.setReadOnly(True)
-        self.logTextBox.resize(400, 615)
+        self.logTextBox.resize(400, 655)
         self.logTextBox.move(800, 85)
         self.logTextBox.append("  =========Action Log=========")
 
@@ -283,80 +284,96 @@ class LaunchControl(QtWidgets.QWidget):
         self.font2.setPointSize(18)
         self.font3 = QtGui.QFont()
         self.font3.setPointSize(12)
+        self.font4 = QtGui.QFont()
+        self.font4.setPointSize(10)
 
         self.launchBtn = QtWidgets.QPushButton("Launch!", self)
-        self.launchBtn.resize(290, 100)
-        self.launchBtn.move(15, 100)
+        self.launchBtn.resize(290, 140)
+        self.launchBtn.move(15, 95)
         self.launchBtn.setEnabled(False)
         self.launchBtn.setFont(self.font2)
         self.launchBtn.clicked.connect(self.launch_app)
 
         self.igniteBtn = QtWidgets.QPushButton("Ignite!", self)
         self.igniteBtn.resize(210, 85)
-        self.igniteBtn.move(310, 100)
+        self.igniteBtn.move(310, 95)
         self.igniteBtn.setEnabled(False)
         self.igniteBtn.setFont(self.font3)
         self.igniteBtn.clicked.connect(self.ignite_app)
 
         self.igniteoffBtn = QtWidgets.QPushButton("Ignitor Off!", self)
-        self.igniteoffBtn.resize(210, 42)
-        self.igniteoffBtn.move(525, 100)
+        self.igniteoffBtn.resize(210, 40)
+        self.igniteoffBtn.move(310, 190)
         self.igniteoffBtn.setEnabled(False)
         self.igniteoffBtn.setFont(self.font3)
         self.igniteoffBtn.clicked.connect(self.igniteoff_app)
 
         self.abortBtn = QtWidgets.QPushButton("Abort!", self)
-        self.abortBtn.resize(210, 42)
-        self.abortBtn.move(525, 142)
+        self.abortBtn.resize(210, 85)
+        self.abortBtn.move(520, 95)
         self.abortBtn.setEnabled(False)
         self.abortBtn.setFont(self.font3)
         self.abortBtn.clicked.connect(self.abort_app)
 
         self.ping_serverBtn = QtWidgets.QPushButton("Connect", self)
         self.ping_serverBtn.resize(240, 60)
-        self.ping_serverBtn.move(40, 255)
+        self.ping_serverBtn.move(40, 295)
         self.ping_serverBtn.setFont(self.font3)
         self.ping_serverBtn.clicked.connect(self.connect_app)
 
         self.open_ventsBtn = QtWidgets.QPushButton("Open Vents", self)
         self.open_ventsBtn.resize(240, 60)
-        self.open_ventsBtn.move(40, 315)
+        self.open_ventsBtn.move(40, 355)
         self.open_ventsBtn.setFont(self.font3)
         self.open_ventsBtn.clicked.connect(self.openvents_app)
 
         self.close_ventsBtn = QtWidgets.QPushButton("Close Vents", self)
         self.close_ventsBtn.resize(240, 60)
-        self.close_ventsBtn.move(40, 375)
+        self.close_ventsBtn.move(40, 415)
         self.close_ventsBtn.setFont(self.font3)
         self.close_ventsBtn.clicked.connect(self.closevents_app)
 
         self.close_mainBtn = QtWidgets.QPushButton("Close Main", self)
         self.close_mainBtn.resize(240, 60)
-        self.close_mainBtn.move(40, 435)
+        self.close_mainBtn.move(40, 475)
         self.close_mainBtn.setFont(self.font3)
         self.close_mainBtn.clicked.connect(self.closemain_app)
 
-        self.safteyBtn = QtWidgets.QPushButton("Toggle Saftey", self)
-        self.safteyBtn.resize(240, 60)
-        self.safteyBtn.move(40, 495)
-        self.safteyBtn.setFont(self.font3)
-        self.safteyBtn.clicked.connect(self.saftey_app)
-
         self.hgpsonBtn = QtWidgets.QPushButton("HGPS On", self)
         self.hgpsonBtn.resize(240, 60)
-        self.hgpsonBtn.move(40, 555)
+        self.hgpsonBtn.move(40, 535)
         self.hgpsonBtn.setFont(self.font3)
         self.hgpsonBtn.clicked.connect(self.hgpson_app)
 
         self.hgpsoffBtn = QtWidgets.QPushButton("HGPS Off", self)
         self.hgpsoffBtn.resize(240, 60)
-        self.hgpsoffBtn.move(40, 615)
+        self.hgpsoffBtn.move(40, 595)
         self.hgpsoffBtn.setFont(self.font3)
         self.hgpsoffBtn.clicked.connect(self.hgpsoff_app)
 
+        self.safteyBtn = QtWidgets.QPushButton("Toggle Saftey", self)
+        self.safteyBtn.resize(240, 60)
+        self.safteyBtn.move(40, 655)
+        self.safteyBtn.setFont(self.font3)
+        self.safteyBtn.clicked.connect(self.saftey_app)
+
+        self.bstronBtn = QtWidgets.QPushButton("Boosters On", self)
+        self.bstronBtn.resize(100, 40)
+        self.bstronBtn.move(520, 190)
+        self.bstronBtn.setFont(self.font4)
+        self.bstronBtn.setEnabled(False)
+        self.bstronBtn.clicked.connect(self.boosterson_app)
+
+        self.bstroffBtn = QtWidgets.QPushButton("Boosters Off", self)
+        self.bstroffBtn.resize(100, 40)
+        self.bstroffBtn.move(620, 190)
+        self.bstroffBtn.setFont(self.font4)
+        self.bstroffBtn.setEnabled(False)
+        self.bstroffBtn.clicked.connect(self.boostersoff_app)
+
         self.statusBtn = QtWidgets.QPushButton("Read Statuses", self)
         self.statusBtn.resize(350, 35)
-        self.statusBtn.move(345, 255)
+        self.statusBtn.move(345, 295)
         self.statusBtn.setFont(self.font3)
         self.statusBtn.clicked.connect(self.read_app)
 
@@ -387,8 +404,9 @@ class LaunchControl(QtWidgets.QWidget):
 
         pen = QtGui.QPen(QtCore.Qt.red, 2, QtCore.Qt.SolidLine)
         qp.setPen(pen)
-        qp.drawLine(20, 210, 725, 210)
-        qp.drawLine(307.5, 220, 307.5, 690)
+        qp.drawLine(20, 250, 725, 250)
+        qp.drawLine(307.5, 260, 307.5, 730)
+        #qp.drawLine(320, 190, 410, 190)
 
     # qp.drawLine(330,400,710,400)
     # qp.drawLine(20,205,325,205)
@@ -456,6 +474,24 @@ class LaunchControl(QtWidgets.QWidget):
             self.logTextBox.append("  >  Ignitor Off!{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
             logger.debug("Ignitor Off at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
             self.send_info('IO')
+        elif self.connection_status == False:
+            QtWidgets.QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
+
+    def boosterson_app(self):
+
+        if self.connection_status == True:
+            self.logTextBox.append("  >  Boosters On{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+            logger.debug("Boosters On at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+            self.send_info('BL')
+        elif self.connection_status == False:
+            QtWidgets.QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
+
+    def boostersoff_app(self):
+
+        if self.connection_status == True:
+            self.logTextBox.append("  >  Boosters Off{}".format(time.strftime("\t     -\t(%H:%M:%S)", time.localtime())))
+            logger.debug("Boosters Off at {}".format(time.strftime("(%H:%M:%S)", time.localtime())))
+            self.send_info('BO')
         elif self.connection_status == False:
             QtWidgets.QMessageBox.information(self, 'Connection Results', 'You are not connected, please connect and try again.')
         
@@ -545,6 +581,8 @@ class LaunchControl(QtWidgets.QWidget):
                 self.abortBtn.setEnabled(True)
                 self.timeBtn.setEnabled(True)
                 self.igniteoffBtn.setEnabled(True)
+                self.bstroffBtn.setEnabled(True)
+                self.bstronBtn.setEnabled(True)
                 self.safteystatuschange.setText('Armed')
                 self.statussafteyred.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
                 self.logTextBox.append("  >  Saftey Toggled{}".format(time.strftime("   -\t(%H:%M:%S)", time.localtime())))
@@ -556,6 +594,8 @@ class LaunchControl(QtWidgets.QWidget):
                 self.abortBtn.setEnabled(False)
                 self.timeBtn.setEnabled(False)
                 self.igniteoffBtn.setEnabled(False)
+                self.bstronBtn.setEnabled(False)
+                self.bstroffBtn.setEnabled(False)
                 self.safteystatuschange.setText('Disarmed')
                 self.statussafteyred.setPixmap(QtGui.QPixmap('pictures/statred.png'))
                 self.logTextBox.append("  >  Saftey Toggled{}".format(time.strftime("   -\t(%H:%M:%S)", time.localtime())))
@@ -619,6 +659,12 @@ class LaunchControl(QtWidgets.QWidget):
         elif command == 'HGPS_Off':
             message = b'ign2_off'
             logger.debug("HGPS_Off at {}".format(time.asctime()))
+        elif command == "BL":
+            message = b'boosters_lit'
+            logger.debug("Boosters On at {}".format(time.asctime()))
+        elif command == "BO":
+            message = b'boosters_off'
+            logger.debug("Boosters Off at {}".format(time.asctime()))
 
         self.s.send(message)
         data = self.s.recv(BUFF)
@@ -639,11 +685,21 @@ class LaunchControl(QtWidgets.QWidget):
             self.statushgpscolor.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
             self.hgpsstatuschange.setText('On')
             logger.debug("HGPS On at {}".format(time.asctime()))
-            
+
         elif data.decode("utf-8") == 'Ignitor 2 Off':
             self.statushgpscolor.setPixmap(QtGui.QPixmap('pictures/statred.png'))
             self.hgpsstatuschange.setText('Off')
             logger.debug("HGPS Off at {}".format(time.asctime()))
+
+        elif data.decode("utf-8") == 'Boosters Lit':
+            #self.statushgpscolor.setPixmap(QtGui.QPixmap('pictures/statgreen.png'))
+            #self.hgpsstatuschange.setText('On')
+            logger.debug("Boosters Lit at {}".format(time.asctime()))
+
+        elif data.decode("utf-8") == 'Boosters Off':
+            #self.statushgpscolor.setPixmap(QtGui.QPixmap('pictures/statred.png'))
+            #self.hgpsstatuschange.setText('Off')
+            logger.debug("Boosters Off at {}".format(time.asctime()))
 
     def switch_label(self,label):
 

@@ -18,7 +18,7 @@ Making a stand alone executable from this
 
 '''
 
-server_IP = '192.168.1.33' #This is the IP of the ESB Pi. It is a static IP. 
+server_IP = '192.168.1.132' #This is the IP of the ESB Pi. It is a static IP. 
 port = 5000
 BUFF = 1024
 

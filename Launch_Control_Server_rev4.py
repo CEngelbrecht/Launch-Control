@@ -22,7 +22,7 @@ import logging
 print ("\nLaunch Control Server Initialized.")
 
 #TCP_IP = "192.168.1.127"
-TCP_IP = "192.168.1.132" #Server IP, not client IP.
+TCP_IP = "192.168.1.33" #Server IP, not client IP.
 #TCP_IP = "10.240.232.136"
 TCP_PORT = 5000
 BUF = 1024
@@ -61,7 +61,7 @@ ign1 = 18        # 18 is for the first ignitor
 ign2 = 27        # 27 is for the second ignitor
 vnts = 22        # 22 is the pin setup for the vents
 main = 23        # 23 is the pin setup for the main valves
-cam = 24         # 24 is for the HACK HD camera actuation
+bstr = 24         # 24 is for the HACK HD camera actuation
 PoE_1 = 20		 # 20 is the PoE for Data Acquisition 1
 PoE_2 = 21		 # 21 is the PoE for Data Acquisition 2	
 
@@ -69,7 +69,7 @@ GPIO.setup(ign1,GPIO.OUT)
 GPIO.setup(ign2,GPIO.OUT)
 GPIO.setup(vnts,GPIO.OUT)
 GPIO.setup(main,GPIO.OUT) 
-GPIO.setup(cam,GPIO.OUT) 
+GPIO.setup(bstr,GPIO.OUT) 
 GPIO.setup(PoE_1,GPIO.OUT)
 GPIO.setup(PoE_2,GPIO.OUT)
 
@@ -80,7 +80,7 @@ GPIO.output(ign1,False)
 GPIO.output(ign2,False)
 GPIO.output(vnts,False)
 GPIO.output(main,False)
-GPIO.output(cam,False)
+GPIO.output(bstr,False)
 GPIO.output(PoE_1,False)
 GPIO.output(PoE_2,False)
 
@@ -214,12 +214,16 @@ def PoE_Switch_Off():
 	conn.send("Switching power to launch control system.")
 	return
 
-def record():
+def boosters_lit():
 
-	GPIO.output(cam,True)
-	time.sleep(.5)
-	GPIO.output(cam,False)
-	conn.send("Toggling camera power.")
+	GPIO.output(bstr,True)
+	conn.send("Boosters Lit")
+	return
+
+def boosters_off():
+
+	GPIO.output(bstr,False)
+	conn.send("Boosters Off")
 	return
 
 def ignitor_one_on():
@@ -228,7 +232,6 @@ def ignitor_one_on():
 	# GPIO.output(27,True)
 
 	GPIO.output(ign1,True)
-	GPIO.output(ign2,True)
 	conn.send("Ignitor 1 Lit")
 	return
 
@@ -238,7 +241,6 @@ def ignitor_one_off():
 	# GPIO.output(27,False)
 
 	GPIO.output(ign1,False)
-	GPIO.output(ign2,False)
 	conn.send("Ignitor 1 Off")
 	return
 
@@ -281,13 +283,14 @@ def vent_close():
 def launch():
 
 	GPIO.output(main,True)
+	GPIO.output(bstr,True)
 	conn.send("Launch!")
 	return
 
 def abort():
 
-	GPIO.output(ign,False)
-	GPIO.output(ign2,False)
+	GPIO.output(ign1,False)
+	GPIO.output(bstr,False)
 	GPIO.output(main,False)
 	GPIO.output(vnts,True)
 	conn.send("Launch Aborted")
@@ -312,18 +315,19 @@ while True:
 	logger.debug("Connection established at {}".format(time.asctime())) #find what the ip is
 	print ("Awaiting commands... \n")
 
-	data = conn.recv(BUF)
-
 	while True: 
-			
+		data = conn.recv(BUF)
 		if not data: break
 
 		print data
 
-		if 'toggle_record' in data:
+		if 'boosters_lit' in data:
 			print "Received data: ",data
-			rec_trd = threading.Thread(target=record())
-			rec_trd.start()
+			boosters_lit()
+
+		elif 'boosters_off' in data:
+			print "Received data: ", data
+			boosters_off()
 		
 		elif 'rocket_power' in data:
 			print "Received data: ", data
