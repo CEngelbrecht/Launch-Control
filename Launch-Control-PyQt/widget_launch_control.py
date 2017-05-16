@@ -5,7 +5,7 @@ import threading
 import socket
 import subprocess
 from datetime import datetime
-from PyQt5 import QtCore, QtWidgets, QtGui, Qt
+from PyQt5 import QtCore, QtWidgets, QtGui, Qt, QtMultimedia
 
 server_IP = '192.168.1.33'  # This is the IP of the ESB Pi. It is a static IP.
 port = 5000
@@ -125,12 +125,12 @@ class LaunchControl(QtWidgets.QWidget):
 
         whitetoolbar = createPicture(self, 'white.png', 0, 0, 1200, 80)
         whitebackground = createPicture(self, 'white2.png', 800, 0, 750, 700)
-        redstripetoolbar = createPicture(self, 'red.png', 0, 65, 1200, 20)
+        redstripetoolbar = createPicture(self, 'red.png', 0, 45, 1200, 20)
         blackbottom = createPicture(self, 'black.png', 0, 740, 1200, 150)
-        blacklogoback = createPicture(self, 'black2.png', 745, 85, 60, 655)
+        blacklogoback = createPicture(self, 'black2.png', 745, 65, 60, 675)
         sdsulogo = createPicture(self, 'sdsu2.png', 10, 750, 100, 79)
         redlogounderline = createPicture(self, 'red2.png', 770, 785, 350, 5)
-        whitebtnborder = createPicture(self, 'black3.png', 320, 230, 400, 10)
+        whitebtnborder = createPicture(self, 'black3.png', 320, 165, 400, 13)
         statrborder = createPicture(self, 'rborder.png', 675, 280, 50, 450)
         statlborder = createPicture(self, 'lborder.png', 315, 280, 50, 450)
         buttonrborder = createPicture(self, 'rborder.png', 250, 280, 50, 450)
@@ -146,18 +146,23 @@ class LaunchControl(QtWidgets.QWidget):
         redstripetoolbar = createPicture(self, 'red.png', 0, 740, 1200, 5)
         commandbreak = createPicture(self, 'break.png', 110, 285, 100, 10)
         statusbreak = createPicture(self, 'break.png', 470, 285, 100, 10)
-        buttonbreak = createPicture(self, 'break.png', 470, 180, 100, 10)
+        buttonbreak = createPicture(self, 'break.png', 470, 156, 100, 10)
+        buttonbreak2 = createPicture(self, 'break.png', 470, 177, 100, 10)
+        blackpoint = createPicture(self, 'redpoint.png', 298, 212, 10, 10)
+        blackpoint2 = createPicture(self, 'redpoint.png', 298, 112, 10, 10)
+        blackpoint3 = createPicture(self, 'redpoint.png', 515, 112, 10, 10)
+        blackpoint4 = createPicture(self, 'redpoint.png', 515, 212, 10, 10)
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Labels
 
         # def createLabel(self, stext, smovex, smovey, sresizex, sresizey, sfontsize, storf, scolor):
 
-        self.mainlabel = createLabel(self, 'LAUNCH CONTROL', 10, 20, 500, 50, 24, True, self.paletteblack)
+        self.mainlabel = createLabel(self, 'LAUNCH CONTROL', 10, 0, 500, 50, 24, True, self.paletteblack)
         self.rocketlabel = createLabel(self, 'SDSU ROCKET PROJECT', 780, 740, 500, 50, 20, True, self.palettered)
         self.buttonlabel = createLabel(self, 'Commands:', 90, 230, 800, 80, 13, True, self.paletteblack)
         self.statuslabel = createLabel(self, 'Readings:', 465, 230, 800, 80, 13, True, self.paletteblack)
-        self.connectionlabel = createLabel(self, 'Connection:', 985, 23, 500, 50, 9, False, self.paletteblue)
+        self.connectionlabel = createLabel(self, 'Connection:', 985, 10, 500, 50, 9, False, self.paletteblue)
         self.breakwirelabel = createLabel(self, 'Breakwire Status', 340, 335, 500, 50, 12, False, self.paletteblue)
         self.mainValvelabel = createLabel(self, 'Main Propellant Valve', 338, 390, 500, 50, 10, False, self.paletteblue)
         self.loxValvelabel = createLabel(self, 'Lox Vent Valve', 340, 445, 500, 50, 12, False, self.paletteblue)
@@ -171,7 +176,7 @@ class LaunchControl(QtWidgets.QWidget):
 
         self.connectionstatus = QtWidgets.QLabel(self)
         self.connectionstatus.setText('Not Connected')
-        self.connectionstatus.move(1080, 23)
+        self.connectionstatus.move(1080, 10)
         self.connectionstatus.resize(500, 50)
         self.connectionstatus.setFont(QtGui.QFont('Times', 9, QtGui.QFont.Bold, False))
         self.connectionstatus.setPalette(self.paletteblue)
@@ -234,8 +239,8 @@ class LaunchControl(QtWidgets.QWidget):
         self.font.setPointSize(12)
         self.logTextBox.setFont(self.font)
         self.logTextBox.setReadOnly(True)
-        self.logTextBox.resize(400, 655)
-        self.logTextBox.move(800, 85)
+        self.logTextBox.resize(400, 675)
+        self.logTextBox.move(800, 65)
         self.logTextBox.append("  =========Action Log=========")
 
         timerbackground = createPicture(self, 'timerback.png', 635, 0, 300, 39)
@@ -286,31 +291,33 @@ class LaunchControl(QtWidgets.QWidget):
         self.font3.setPointSize(12)
         self.font4 = QtGui.QFont()
         self.font4.setPointSize(10)
+        self.font5 = QtGui.QFont()
+        self.font5.setPointSize(24)
 
         self.launchBtn = QtWidgets.QPushButton("Launch!", self)
-        self.launchBtn.resize(290, 140)
-        self.launchBtn.move(15, 95)
+        self.launchBtn.resize(290, 170)
+        self.launchBtn.move(5, 70)
         self.launchBtn.setEnabled(False)
-        self.launchBtn.setFont(self.font2)
+        self.launchBtn.setFont(self.font5)
         self.launchBtn.clicked.connect(self.launch_app)
 
         self.igniteBtn = QtWidgets.QPushButton("Ignite!", self)
-        self.igniteBtn.resize(210, 85)
-        self.igniteBtn.move(310, 95)
+        self.igniteBtn.resize(203, 85)
+        self.igniteBtn.move(310, 70)
         self.igniteBtn.setEnabled(False)
         self.igniteBtn.setFont(self.font3)
         self.igniteBtn.clicked.connect(self.ignite_app)
 
         self.igniteoffBtn = QtWidgets.QPushButton("Ignitor Off!", self)
-        self.igniteoffBtn.resize(210, 40)
-        self.igniteoffBtn.move(310, 190)
+        self.igniteoffBtn.resize(203, 53)
+        self.igniteoffBtn.move(310, 187)
         self.igniteoffBtn.setEnabled(False)
         self.igniteoffBtn.setFont(self.font3)
         self.igniteoffBtn.clicked.connect(self.igniteoff_app)
 
         self.abortBtn = QtWidgets.QPushButton("Abort!", self)
-        self.abortBtn.resize(210, 85)
-        self.abortBtn.move(520, 95)
+        self.abortBtn.resize(203, 85)
+        self.abortBtn.move(528, 70)
         self.abortBtn.setEnabled(False)
         self.abortBtn.setFont(self.font3)
         self.abortBtn.clicked.connect(self.abort_app)
@@ -358,15 +365,15 @@ class LaunchControl(QtWidgets.QWidget):
         self.safteyBtn.clicked.connect(self.saftey_app)
 
         self.bstronBtn = QtWidgets.QPushButton("Boosters On", self)
-        self.bstronBtn.resize(100, 40)
-        self.bstronBtn.move(520, 190)
+        self.bstronBtn.resize(102, 53)
+        self.bstronBtn.move(528, 187)
         self.bstronBtn.setFont(self.font4)
         self.bstronBtn.setEnabled(False)
         self.bstronBtn.clicked.connect(self.boosterson_app)
 
         self.bstroffBtn = QtWidgets.QPushButton("Boosters Off", self)
-        self.bstroffBtn.resize(100, 40)
-        self.bstroffBtn.move(620, 190)
+        self.bstroffBtn.resize(102, 53)
+        self.bstroffBtn.move(633, 187)
         self.bstroffBtn.setFont(self.font4)
         self.bstroffBtn.setEnabled(False)
         self.bstroffBtn.clicked.connect(self.boostersoff_app)
@@ -384,7 +391,7 @@ class LaunchControl(QtWidgets.QWidget):
         self.timeBtn.clicked.connect(self.timer1)
 
         self.pingBtn = QtWidgets.QPushButton("Ping Server", self)
-        self.pingBtn.move(1070, 15)
+        self.pingBtn.move(1070, 0)
         self.pingBtn.resize(125, 25)
         self.pingBtn.clicked.connect(self.ping_app)
 
@@ -424,6 +431,8 @@ class LaunchControl(QtWidgets.QWidget):
         self.timert.setText(str(self.timeup))
         if self.timeup >= 1:
             self.timerT.setText("T+")
+        if self.timeup == 0:
+            QtMultimedia.QSound.play('sounds/beep.wav')
 
     def timer1(self):
         self.logTextBox.append("  >  Timer Started!{}".format(time.strftime("   -\t(%H:%M:%S)", time.localtime())))
