@@ -384,12 +384,10 @@ while True:
 		elif 'bwire_status' in data:
 			bwire_trd = threading.Thread(target=Breakwire_read())
 			bwire_trd.start()
-			print "B_Wire_Thread Started"
-			print "Started R_Main_Thread"	
+
 		elif 'main_status' in data:
 			r_main_trd = threading.Thread(target=Main_Valve_Sensor())
 			r_main_trd.start()
-			print "Started R_Main_Thread"
 
 		elif 'kero_status' in data:
 			r_kero_trd = threading.Thread(target=Kero_Valve_Sensor())

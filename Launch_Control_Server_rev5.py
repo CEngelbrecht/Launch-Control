@@ -148,35 +148,33 @@ def Breakwire_read():
 
 	if GPIO.input(b_wire) == True:
 		bwire = 'Intact'
-		print "sending b_wire status"
 		conn.send(str(bwire))
-		print "sent b_wire status"
+		#print "sent b_wire status"
 		logger.debug("sent b_wire status of {} at {}".format(str(bwire), time.asctime()))
 	elif GPIO.input(b_wire) == False:
 		bwire = 'Broken'
 		conn.send(str(bwire))
-		print "Sent b_wire status of {}".format(bwire)
+		#print "Sent b_wire status of {}".format(bwire)
 		logger.debug("Sent b_wire status of {} at {}".format(str(bwire), time.asctime()))
 	return
 
 def Main_Valve_Sensor():
 
 	# Function that reads the magnetic reed switch on board the rocket at the main fuel valves
-	print "in Main sensor function"
 
 	if GPIO.input(r_main) == True:
 		main_status = 'Open'
-		print "main is open: sending status"
+		#print "main is open: sending status"
 		logger.debug("main is open: sending main_status at {}".format(time.asctime()))
 		conn.send(str(main_status))
-		print "Sent status of {}".format(main_status)
+		#print "Sent status of {}".format(main_status)
 		logger.debug("Sent main_status(open) of {} at {}".format(str(main_status), time.asctime()))
 	elif GPIO.input(r_main) == False:
 		main_status = 'Closed'
-		print "main is closed: sending status"
+		#print "main is closed: sending status"
 		logger.debug("main is closed: sending main_status at {}".format(time.asctime()))
 		conn.send(str(main_status))
-		print "Sent status of {}".format(main_status)
+		#print "Sent status of {}".format(main_status)
 		logger.debug("Sent main_status(closed) of {} at {}".format(str(main_status), time.asctime()))
 	return
 
@@ -328,14 +326,12 @@ while True:
 
 	print ("Connection established.")
 	print 'Connection address: ',addr
-	logger.debug("Connection established at {}".format(time.asctime())) #find what the ip is
+	#logger.debug("Connection established at {}".format(time.asctime())) #find what the ip is
 	print ("Awaiting commands... \n")
 
 	while True: 
 		data = conn.recv(BUF)
 		if not data: break
-
-		print data
 
 		if 'boosters_lit' in data:
 			print "Received data: ",data
@@ -400,12 +396,10 @@ while True:
 		elif 'bwire_status' in data:
 			bwire_trd = threading.Thread(target=Breakwire_read())
 			bwire_trd.start()
-			print "B_Wire_Thread Started"
-			print "Started R_Main_Thread"	
+
 		elif 'main_status' in data:
 			r_main_trd = threading.Thread(target=Main_Valve_Sensor())
 			r_main_trd.start()
-			print "Started R_Main_Thread"
 
 		elif 'kero_status' in data:
 			r_kero_trd = threading.Thread(target=Kero_Valve_Sensor())
