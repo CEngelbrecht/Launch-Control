@@ -1,8 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QTabWidget, QVBoxLayout
 from PyQt5.QtCore import pyqtSlot
-from widget_start import Start
 from widget_launch_control import LaunchControl
-from widget_coms import RadioTab
 
 
 class TabManager(QWidget):
